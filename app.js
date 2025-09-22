@@ -6,6 +6,7 @@ const path=require("path");
 const methodOverride=require("method-override");
 const ejsMate=require("ejs-mate");
 
+
 //connect the database
 main().then(()=>{
     console.log("connected to DB");
@@ -46,9 +47,9 @@ app.get("/listings/:id",async(req,res)=>{
 //create route
 app.post("/listings",async(req,res)=>{
 //     let{title,description ,image,privateDecrypt,country,location}=req.body; //variable extraction
-const newListing=new Listing(req.body.listing);
-await newListing.save();
-res.redirect("/listings");
+    const newListing=new Listing(req.body.listing);
+    await newListing.save();
+     res.redirect("/listings");
 })
 //edit route
 app.get("/listings/:id/edit",async (req,res)=>{
@@ -57,13 +58,32 @@ app.get("/listings/:id/edit",async (req,res)=>{
     res.render("listings/edit",{listing});
 })
 //update route
-app.put("/listings/:id",async(req,res)=>{
-   const { id } = req.params;
-    console.log(req.body);
-    await Listing.findByIdAndUpdate(id, {
-        $set:{ "image.url": req.body.listing.image.url } });
-    res.redirect(`/listings/${id}`);
-   
+// app.put("/listings/:id", async (req, res) => {
+//     const { id } = req.params;
+//     await Listing.findByIdAndUpdate(id, req.body.listing, { new: true });
+//     res.redirect(`/listings/${id}`);
+// });
+app.put('/listings/:id', async (req, res) => {
+    try {
+        const { listing } = req.body;
+
+        // 🔹 Agar image accidentally object type me aa gaya ho, URL extract karo
+        if (typeof listing.image === 'object' && listing.image.url) {
+            listing.image = listing.image.url;
+        }
+
+        // DB me update karo
+        const updatedListing = await Listing.findByIdAndUpdate(
+            req.params.id,
+            listing,
+            { new: true }
+        );
+
+        res.redirect(`/listings/${updatedListing._id}`);
+    } catch (e) {
+        console.log(e);
+        res.redirect('/listings');
+    }
 });
 //delete route
 app.delete("/listings/:id",async(req,res)=>{

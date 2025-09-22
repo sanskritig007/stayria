@@ -117,7 +117,7 @@ const sampleListings = [
   //   },
   //   price: 4000,
   //   location: "Serengeti National Park",
-  //   country: "Tanzania",
+  //   country: "Tanzania",h
   // },
   {
     title: "Historic Canal House",

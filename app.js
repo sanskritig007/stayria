@@ -58,32 +58,10 @@ app.get("/listings/:id/edit",async (req,res)=>{
     res.render("listings/edit",{listing});
 })
 //update route
-// app.put("/listings/:id", async (req, res) => {
-//     const { id } = req.params;
-//     await Listing.findByIdAndUpdate(id, req.body.listing, { new: true });
-//     res.redirect(`/listings/${id}`);
-// });
-app.put('/listings/:id', async (req, res) => {
-    try {
-        const { listing } = req.body;
-
-        // 🔹 Agar image accidentally object type me aa gaya ho, URL extract karo
-        if (typeof listing.image === 'object' && listing.image.url) {
-            listing.image = listing.image.url;
-        }
-
-        // DB me update karo
-        const updatedListing = await Listing.findByIdAndUpdate(
-            req.params.id,
-            listing,
-            { new: true }
-        );
-
-        res.redirect(`/listings/${updatedListing._id}`);
-    } catch (e) {
-        console.log(e);
-        res.redirect('/listings');
-    }
+app.put("/listings/:id", async (req, res) => {
+    const { id } = req.params;
+    await Listing.findByIdAndUpdate(id, req.body.listing, { new: true });
+    res.redirect(`/listings/${id}`);
 });
 //delete route
 app.delete("/listings/:id",async(req,res)=>{

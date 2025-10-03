@@ -5,7 +5,7 @@ body{
     min-height: 100vh;
 }
 .container{
-      flex: 1;
+    flex: 1;
 }
 .navbar{
     height: 5rem;

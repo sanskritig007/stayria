@@ -36,7 +36,7 @@ app.get("/",(req,res)=>{//basic api call
 })
 
 app.use("/listings",listings);
-app.use("/listings/:id/reviews",review);
+app.use("/listings/:id/reviews",reviews);
 
 app.use((req,res,next)=>{
     next(new ExpressError(404,"Page Not Found!"));

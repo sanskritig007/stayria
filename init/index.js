@@ -1,6 +1,7 @@
 const mongoose=require("mongoose");
 const initData=require("./data.js");
 const Listing=require("../models/listing.js");
+const ObjectId = mongoose.Types.ObjectId;
 
 main()
  .then(()=>{
@@ -14,6 +15,7 @@ async function main(){
 
 const initDB=async()=>{
     await Listing.deleteMany({});
+    initData.data=initData.data.map((obj)=>({...obj,owner:new ObjectId("652d0081ae547c5d37e56b5f")}))
     await Listing.insertMany(initData.data);
     console.log("data was initialized");
 }

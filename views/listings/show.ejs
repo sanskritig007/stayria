@@ -4,9 +4,16 @@
         <h3><%= listing.title %></h3>
     </div>
     <div class="card col-6 offset-3 show-card listing-card">
-        <img src="<%=listing.image%>" class="card-img-top show-img" alt="listing_image">
+        <img src="<%=listing.image.url%>" class="card-img-top show-img" alt="listing_image">
         <div class="card-body">
             <p class="card-text">
+                <i><% if (listing.owner) { %>
+                   Hosted by <%= listing.owner.username %>
+                <% } else { %>
+                  Hosted by Unknown
+                <% } %>
+                </i>
+                </br>
                 <%= listing.description %><br>
                 &#8377;<%= listing.price.toLocaleString("en-IN") %><br>
                 <%= listing.location %><br>

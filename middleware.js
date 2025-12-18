@@ -1,12 +1,15 @@
 const Listing = require("./models/listing")
+const Review = require("./models/review")
 const ExpressError=require("./utils/ExpressError.js");
 const {listingSchema , reviewSchema}=require("./schema.js");
 
 module.exports.isLoggedIn=(req,res,next)=>{
     // console.log(req.path,"..",req.originalUrl);
     if(!req.isAuthenticated()){
-        req.session.redirectUrl = req.originalUrl//redirectUrl save  ..middleware ke pass req.session  ki excess to hogi hi to uske baad kahi bhi redirect krvana hoga hum yaha se access krskte h 
-        req.flash("error","you must be logged in to create listing!");
+        if (req.method === "GET") {
+         req.session.redirectUrl = req.originalUrl//redirectUrl// save  ..middleware ke pass req.session  ki excess to hogi hi to uske baad kahi bhi redirect krvana hoga hum yaha se access krskte h 
+        }
+        req.flash("error","You must be logged in to create listing!");
         return res.redirect("/login");
     }
     next();//user authenticated hota h to next ko call krdo nhi to redirect to /login route
@@ -49,4 +52,14 @@ module.exports.validateReview=(req,res,next)=>{
     }else{
         next();
     }
+}
+
+module.exports.isReviewAuthor= async (req,res,next)=>{
+    let { id,reviewId } = req.params;
+     let review = await Review.findById(reviewId);
+    if(! review.author.equals(res.locals.currUser._id)){
+        req.flash("error","You did not created this review");
+        return res.redirect(`/listings/${id}`);
+    }
+    next();
 }

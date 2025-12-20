@@ -4,6 +4,7 @@ const wrapAsync= require("../utils/wrapAsync.js");
 const Listing = require("../models/listing.js")
 const {isLoggedIn, isOwner,validateListing}=require("../middleware.js")
 
+const listingController = require("../controllers/listings.js")
 
 
 
@@ -16,10 +17,10 @@ const {isLoggedIn, isOwner,validateListing}=require("../middleware.js")
 //     res.redirect("/listings");                     // redirect triggers next request
 // }));
 
-router.get("/",wrapAsync(async (req,res)=>{
-    const allListings=await Listing.find({});
-    res.render("listings/index",{allListings});
-}))
+router.get(
+    "/",
+    wrapAsync(listingController.index) 
+); //hamare root route ke pass jaise hi GET req aaye waise hi index naam ka fuction ya jo call back h vo exicute hojye 
 //new route
 router.get("/new",isLoggedIn,(req,res)=>{
     console.log(req.user);

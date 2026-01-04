@@ -5,16 +5,21 @@ const Listing = require("../models/listing.js")
 const {isLoggedIn, isOwner,validateListing}=require("../middleware.js")
 
 const listingController = require("../controllers/listings.js")
+const multer  = require('multer')
+const upload = multer({ dest: 'uploads/' })
+
 
 //implementing Router.route ( to make it more compact)
 router
  .route("/")
  .get( wrapAsync(listingController.index) )//hamare root route ke pass jaise hi GET req aaye waise hi index naam ka fuction ya jo call back h vo exicute hojye 
- .post(
-    isLoggedIn,
-    validateListing,
-    wrapAsync(listingController.createListing));//create
-
+//  .post(
+//     isLoggedIn,
+//     validateListing,
+//     wrapAsync(listingController.createListing));//create
+.post(upload.single('listing[image]'),(req,res)=>{
+    res.send(req.file);
+})
 //new route
 router.get("/new",isLoggedIn,listingController.renderNewForm);//id wale se uper rkhege warna router wala logic h usse id ki tarah interpret krega aur jo new wala route h usse database ke ander search krne ki kosis krega to error aaskta h .
 

@@ -46,9 +46,9 @@ const sessionOptions={
     },
 };
 
-app.get("/",(req,res)=>{//basic api call
-    res.send("Hi, I am root");
-})
+// app.get("/",(req,res)=>{//basic api call
+//     res.send("Hi, I am root");
+// })
 
 app.use(session(sessionOptions));
 app.use(flash());        //must be before routes calling because flash ko routes ke help se use krne wale h  

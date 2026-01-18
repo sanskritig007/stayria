@@ -100,5 +100,7 @@ body{
 }
 #map{ 
     height:400px;
-    width:80vh;
+    width:100%;
+     background-color: #eaeaea;
+    border-radius: 10px;
 }

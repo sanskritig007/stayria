@@ -4,53 +4,65 @@
         display: flex;
         flex-wrap: wrap;
     }
-    .filter{
-        align-items: center;
-        margin: 2rem;
-        margin-top: 2rem;
-        opacity:0.7;
-    }
-    .filter:hover{
-        opacity: 1;
-        cursor: pointer;
-    }
+    .filter {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 2rem;
+  opacity: 0.7;
+}
+
+.filter:hover {
+  opacity: 1;
+}
     .filter p{
         font-size: 0.8rem;
     }
 </style>
     <div id="filters">
-        <div class="filter">
-            <div><i class="fa-solid fa-fire"></i></div>
-            <p>Trending</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-bed"></i></div>
-            <p>Rooms</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-mountain-city"></i></div>
+
+     <a href="/listings?category=trending" class="filter">
+          <div><i class="fa-solid fa-fire"></i></div>
+         <p>Trending</p>
+     </a>
+
+      <a href="/listings?category=rooms" class="filter">
+         <div><i class="fa-solid fa-bed"></i></div>
+         <p>Rooms</p>
+        </a>
+
+        <a href="/listings?category=iconic" class="filter">
+          <div><i class="fa-solid fa-mountain-city"></i></div>
             <p>Iconic Cities</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-mountain"></i></div>
-            <p>Mountains</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-brands fa-fort-awesome"></i></div>
-            <p>Castles</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-person-swimming"></i></div>
-            <p>Amazing pools</p>
-        </div>
-        <div class="filter">
+        </a>
+
+        <a href="/listings?category=mountains" class="filter">
+         <div><i class="fa-solid fa-mountain"></i></div>
+         <p>Mountains</p>
+        </a>
+
+        <a href="/listings?category=castles" class="filter">
+          <div><i class="fa-brands fa-fort-awesome"></i></div>
+         <p>Castles</p>
+        </a>
+
+        <a href="/listings?category=pools" class="filter">
+          <div><i class="fa-solid fa-person-swimming"></i></div>
+         <p>Amazing pools</p>
+        </a>
+
+       <a href="/listings?category=camping" class="filter">
             <div><i class="fa-solid fa-campground"></i></div>
-            <p>Camping</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-cow"></i></div>
-            <p>Farms</p>
-        </div>
+          <p>Camping</p>
+        </a>
+
+        <a href="/listings?category=farms" class="filter">
+         <div><i class="fa-solid fa-cow"></i></div>
+         <p>Farms</p>
+        </a>
+
     </div>
 <div class="row row-cols-lg-3 row-cols-md-3 row-cols-sm-1 mt-3">
         <% for(let listing of allListings){%>

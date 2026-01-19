@@ -38,6 +38,13 @@
         <input name="listing[location]" value="<%=listing.location%>" type="text" class="form-control" required>
         <div class="invalid-feedback">Location should be valid</div>
     </div>
+    <select name="listing[category]" class="form-control">
+      <option value="trending" <%= listing.category === "trending" ? "selected" : "" %>>Trending</option>
+      <option value="rooms" <%= listing.category === "rooms" ? "selected" : "" %>>Rooms</option>
+      <option value="iconic" <%= listing.category === "iconic" ? "selected" : "" %>>Iconic Cities</option>
+      <option value="mountains" <%= listing.category === "mountains" ? "selected" : "" %>>Mountains</option>
+      <option value="castles" <%= listing.category === "castles" ? "selected" : "" %>>Castles</option>
+    </select>
     <br></br> 
     <button class="btn btn-dark edit-btn">Edit</button>
 </form>

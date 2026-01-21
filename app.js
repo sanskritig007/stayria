@@ -12,12 +12,14 @@ const ExpressError=require("./utils/ExpressError.js");
 const session = require("express-session");
 const flash = require("connect-flash");
 const passport = require("passport");
-const LocalStratrgy=require("passport-local");
+const LocalStrategy=require("passport-local");
 const User=require("./models/user.js");
 
 const listingsRouter = require("./routes/listing.js");
 const reviewsRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js")
+
+const dbUrl=process.env.ATLASDB_URL;
 
 //connect the database
 main().then(()=>{
@@ -26,9 +28,16 @@ main().then(()=>{
     console.log(err);
 })
 async function main(){
-    await mongoose.connect('mongodb://127.0.0.1:27017/Stayria');
+    await mongoose.connect(dbUrl);
 }
 
+mongoose.connection.on("connected", () => {
+    console.log("MongoDB connected successfully");
+});
+
+mongoose.connection.on("error", (err) => {
+    console.log(" MongoDB connection error:", err);
+});
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"views"));
 app.use(express.urlencoded({extended:true}));
@@ -55,7 +64,7 @@ app.use(flash());        //must be before routes calling because flash ko routes
 
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStratrgy(User.authenticate()));
+passport.use(new LocalStrategy(User.authenticate()));
 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());

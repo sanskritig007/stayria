@@ -1,7 +1,7 @@
 if(process.env.NODE_ENV != "production"){
     require('dotenv').config()
 }
-
+const port = process.env.PORT|| 8080;
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -46,7 +46,7 @@ const store=MongoStore.create({
     touchAfter:24*3600,
 })
 
-store.on("error",()=>{
+store.on("error",(err)=>{
     console.log("ERROR in MONGO SESSION STORE",err)
 })
 
@@ -54,8 +54,9 @@ const sessionOptions={
     store,
     secret:process.env.SECRET,
     resave:false,
-    saveUninitialized:true,
+    saveUninitialized:false,
     cookie:{               //logincookie once you will login you dont hav eto login atleast 1 week if working regularly
+        httpOnly:true,
         expires: Date.now()+ 7 * 24 * 60 * 60 * 1000,
         maxAge:  7 * 24 * 60 * 60 * 1000,
     },
@@ -104,6 +105,10 @@ app.use((err,req,res,next)=>{
     res.status(statusCode).render("error.ejs",{message});
     // res.status(statusCode).send(message);
 })
-app.listen(8080,()=>{
-    console.log("server is listening to port 8080");
-})
+// app.listen(8080,()=>{
+//     console.log("server is listening to port 8080");
+// })
+
+app.listen(port, () => {
+    console.log(`server is listening to port ${port}`);
+});

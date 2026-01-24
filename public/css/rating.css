@@ -195,3 +195,18 @@
   -webkit-transition: background-position .7s;
   transition: background-position .7s;
 }
+.star-wrap {
+  display: flex;
+  align-items: center;
+  max-width: 150px;
+  overflow: hidden;
+  margin: 0.3rem 0;
+}
+.review-card {
+  border-radius: 16px;
+  padding: 0.5rem;
+}
+.starability-result {
+  display: block;
+  height: 30px;
+}

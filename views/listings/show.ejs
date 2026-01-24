@@ -73,10 +73,12 @@
       <div class="row">
          <p><b>All Reviews</b></p>  
          <% for(review of listing.reviews){%>
-            <div class="card col-5 ms-3 mb-3">
+            <div class="card col-12 col-md-5 mb-3 me-md-4 review-card">
                 <div class="card-body">
                     <h5 class="card-title">@<%=review.author.username%></h5>
-                    <p class="starability-result card-text" data-rating="<%=review.rating%>"></p>
+                    <div class="star-wrap">
+                        <span class="starability-result card-text" data-rating="<%=review.rating%>"></span>
+                    </div>
                     <p class="card-text"><%=review.comment%></p>
 
                 </div>
@@ -87,8 +89,8 @@
          <%}%>
         <%}%>
         </div>
-        <div class="col-6 offset-3 mb-3">
-            <h3>Where you'll be</h3>
+        <div class="col-12 col-md-8 offset-md-2 mb-3">
+            <h3 class="where-title">Where you'll be</h3>
             <div id="map"></div>
         </div>
     </div>

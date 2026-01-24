@@ -99,8 +99,119 @@ body{
     padding-right: 0;
 }
 #map{ 
-    height:400px;
-    width:100%;
-     background-color: #eaeaea;
-    border-radius: 10px;
+    height: 420px;
+  width: 100%;
+  border-radius: 18px;
+  margin-top: 1rem;
+}
+@media (max-width: 768px) {
+  #map {
+    height: 300px;
+  }
+}
+.where-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 2rem 0 1rem;
+}
+@media (max-width: 768px) {
+  .navbar {
+    height: auto;
+    padding-bottom: 0.5rem;
+  }
+}
+@media (max-width: 768px) {
+  .container,
+  .listings {
+    margin-top: 1rem;
+  }
+}
+@media (max-width: 768px) {
+  form[role="search"] {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 0.6rem 1rem;
+  }
+
+  .btn-search {
+    width: 100%;
+    justify-content: center;
+  }
+}
+@media (max-width: 768px) {
+  .btn-search span {
+    display: none;
+  }
+}
+.navbar {
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+  backdrop-filter: blur(6px);
+}
+.search-input {
+  border: 1px solid #eee;
+  transition: all 0.2s ease;
+}
+
+.search-input:focus {
+  box-shadow: 0 0 0 3px rgba(254,66,77,0.15);
+  border-color: #fe424d;
+}
+.btn-search,
+.add-btn,
+.edit-btn {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-search:hover,
+.add-btn:hover,
+.edit-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(254,66,77,0.25);
+}
+.listing-card {
+  border-radius: 18px;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.listing-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+}
+.card-img-top,
+.show-img {
+  filter: saturate(1.05) contrast(1.05);
+}
+@media (max-width: 768px) {
+  body {
+    font-size: 15px;
+  }
+
+  .btn,
+  .nav-link {
+    padding: 0.6rem 0;
+  }
+}
+.f-info {
+  border-top: 1px solid #ddd;
+  background: linear-gradient(to top, #eaeaea, #f6f6f6);
+}
+.review-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.2rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+.review-card .card-title {
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.review-card .btn {
+  margin-top: 0.5rem;
 }

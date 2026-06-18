@@ -14,17 +14,25 @@ module.exports.renderNewForm = (req,res)=>{
 }
 
 module.exports.index = async (req, res) => {
-  const { category } = req.query;
+  const { category, q } = req.query;
 
   let allListings;
 
   if (category) {
     allListings = await Listing.find({ category });
+  } else if (q) {
+    allListings = await Listing.find({
+      $or: [
+        { title: { $regex: q, $options: "i" } },
+        { location: { $regex: q, $options: "i" } },
+        { country: { $regex: q, $options: "i" } }
+      ]
+    });
   } else {
     allListings = await Listing.find({});
   }
 
-  res.render("listings/index", { allListings });
+  res.render("listings/index", { allListings, searchPrompt: q || "" });
 };
   
 module.exports.showListing = async(req,res)=>{

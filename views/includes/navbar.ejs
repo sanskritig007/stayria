@@ -1,57 +1,505 @@
-<style>
-  .btn-search{
-    background-color: #fe424d;
-    color: white;
-    border-radius: 25px;
-    padding: 0 1rem 0 1rem;
-  }
-  .btn-search:hover{
-    background-color:#fe424d ;
-    color:white;
-  }
-  .btn-search i{
-    display: inline;
-    margin: 0.5rem;
-  }
-  .search-input{
-    border-radius: 25px;
-    padding: 0.5rem 3rem 0.5rem 3rem;
-    font-size: 0.9rem;
-  }
-</style>
+<nav class="navbar navbar-expand-lg bg-body-light border-bottom sticky-top navbar-airbnb navbar-expanded">
+  <div class="container-fluid header-container d-flex flex-column">
+    
+    <!-- Top Row -->
+    <div class="header-top-row d-flex align-items-center justify-content-between w-100">
+      <!-- Left: Brand Logo -->
+      <a class="navbar-brand d-flex align-items-center gap-2" href="/listings">
+        <i class="fa-regular fa-compass"></i>
+        <span class="brand-text">stayria</span>
+      </a>
 
-<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/listings"><i class="fa-regular fa-compass"></i></i></a>
-    <button 
-    class="navbar-toggler" 
-    type="button" 
-    data-bs-toggle="collapse" 
-    data-bs-target="#navbarNavAltMarkup" 
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-link" href="/listings">Explore</a>
+      <!-- Center: Navigation Tabs (Expanded State Only) -->
+      <div class="navbar-center-menu expand-only">
+        <a href="/listings" class="menu-tab active">Homes</a>
+        <a href="#" class="menu-tab">Experiences</a>
+        <a href="#" class="menu-tab">Services</a>
       </div>
-      <div class="navbar-nav ms-auto">
-        <form class="d-flex w-100 my-2 my-md-0" role="search">
-         <input class="form-control me-2 search-input" type="search" placeholder="Search destinations"/>
-         <button class="btn btn-search" type="submit">
-          <i class="fa-solid fa-magnifying-glass"></i>Search</button>
-        </form>
+
+      <!-- Center: Compact Search Bar (Collapsed State Only) -->
+      <div class="navbar-compact-search collapse-only">
+        <div class="compact-pill d-flex align-items-center">
+          <span class="compact-text bold">Anywhere</span>
+          <span class="compact-divider"></span>
+          <span class="compact-text bold">Anytime</span>
+          <span class="compact-divider"></span>
+          <span class="compact-text select-guests text-muted">Add guests</span>
+          <button class="compact-search-btn">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
       </div>
-      <div class="navbar-nav ms-auto">
-        <a class="nav-link" href="/listings/new">Become a host</a>
-        <% if(!currUser){%>
-        <a class="nav-link"  href="/signup"><b>Sign up</b></a>
-        <a class="nav-link" href="/login"><b>Log in</b></a>
-        <%}%>
-        <% if(currUser){%>
-        <a class="nav-link" href="/logout">Log out</a>
-        <%}%>
+
+      <!-- Right: User Actions / Menu -->
+      <div class="header-right-menu d-flex align-items-center gap-3">
+        <a class="nav-link become-host-btn d-none d-md-inline" href="/listings/new">Become a host</a>
+        <a class="nav-link px-2 d-none d-md-inline" href="#"><i class="fa-solid fa-globe"></i></a>
+        
+        <!-- User Profile Dropdown Button -->
+        <div class="dropdown">
+          <button class="btn profile-dropdown-btn d-flex align-items-center gap-2" type="button" id="userMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-bars"></i>
+            <div class="user-avatar-icon">
+              <% if(currUser) { %>
+                <span class="avatar-letter"><%= currUser.username.substring(0,1).toUpperCase() %></span>
+              <% } else { %>
+                <i class="fa-solid fa-circle-user text-muted"></i>
+              <% } %>
+            </div>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end profile-dropdown-menu" aria-labelledby="userMenuDropdown">
+            <% if(!currUser){%>
+              <li><a class="dropdown-item fw-bold" href="/signup">Sign up</a></li>
+              <li><a class="dropdown-item" href="/login">Log in</a></li>
+            <%}%>
+            <% if(currUser){%>
+              <li><a class="dropdown-item fw-bold" href="/listings/new">Become a host</a></li>
+              <li><a class="dropdown-item" href="/logout">Log out</a></li>
+            <%}%>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="/listings">Help Center</a></li>
+          </ul>
+        </div>
       </div>
+    </div>
+
+    <!-- Bottom Row (Expanded State - Search Bar Pill & Dropdown Popups) -->
+    <div class="header-bottom-row expand-only w-100 d-flex justify-content-center">
+      <form class="search-form-airbnb position-relative" action="/listings" method="GET">
+        <div class="search-bar-pill d-flex align-items-center w-100">
+          
+          <!-- Where Input -->
+          <div class="search-item active" id="search-item-where" data-popup="where">
+            <label for="search-input-where">Where</label>
+            <input type="text" id="search-input-where" name="q" placeholder="Search destinations" autocomplete="off" value="<%= typeof searchPrompt !== 'undefined' ? searchPrompt : '' %>">
+          </div>
+          
+          <div class="search-divider"></div>
+          
+          <!-- When Input -->
+          <div class="search-item" id="search-item-when" data-popup="when">
+            <label>When</label>
+            <input type="text" id="search-input-when" placeholder="Add dates" readonly>
+          </div>
+          
+          <div class="search-divider"></div>
+          
+          <!-- Who Input -->
+          <div class="search-item" id="search-item-who" data-popup="who">
+            <label>Who</label>
+            <input type="text" id="search-input-who" placeholder="Add guests" readonly>
+            <input type="hidden" name="guests" id="hidden-guests-count" value="0">
+          </div>
+          
+          <!-- Search Submit Button -->
+          <button type="submit" class="search-btn">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <span class="search-btn-text">Search</span>
+          </button>
+        </div>
+
+        <!-- Popups Container -->
+        <div class="popups-container">
+          
+          <!-- Where Popup -->
+          <div class="search-popup active" id="popup-where">
+            <div class="popup-title">Suggested destinations</div>
+            <ul class="destinations-list list-unstyled mb-0">
+              <li class="destination-option d-flex align-items-center gap-3" data-value="Nearby">
+                <div class="dest-icon-container"><i class="fa-solid fa-location-crosshairs"></i></div>
+                <div class="dest-text d-flex flex-column">
+                  <span class="dest-name text-dark">Nearby</span>
+                  <span class="dest-sub text-muted">Find what's around you</span>
+                </div>
+              </li>
+              <li class="destination-option d-flex align-items-center gap-3" data-value="Varanasi">
+                <div class="dest-icon-container orange"><i class="fa-solid fa-location-dot"></i></div>
+                <div class="dest-text d-flex flex-column">
+                  <span class="dest-name text-dark">Varanasi, Uttar Pradesh</span>
+                  <span class="dest-sub text-muted">Near you</span>
+                </div>
+              </li>
+              <li class="destination-option d-flex align-items-center gap-3" data-value="Lucknow">
+                <div class="dest-icon-container pink"><i class="fa-solid fa-location-dot"></i></div>
+                <div class="dest-text d-flex flex-column">
+                  <span class="dest-name text-dark">Lucknow, Uttar Pradesh</span>
+                  <span class="dest-sub text-muted">For its stunning architecture</span>
+                </div>
+              </li>
+              <li class="destination-option d-flex align-items-center gap-3" data-value="Goa">
+                <div class="dest-icon-container teal"><i class="fa-solid fa-location-dot"></i></div>
+                <div class="dest-text d-flex flex-column">
+                  <span class="dest-name text-dark">North Goa, Goa</span>
+                  <span class="dest-sub text-muted">Popular beach destination</span>
+                </div>
+              </li>
+              <li class="destination-option d-flex align-items-center gap-3" data-value="Delhi">
+                <div class="dest-icon-container green"><i class="fa-solid fa-location-dot"></i></div>
+                <div class="dest-text d-flex flex-column">
+                  <span class="dest-name text-dark">New Delhi, Delhi</span>
+                  <span class="dest-sub text-muted">For sights like India Gate</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- When Popup (Calendar) -->
+          <div class="search-popup" id="popup-when">
+            <div class="calendar-tabs d-flex justify-content-center mb-3">
+              <button type="button" class="calendar-tab active">Dates</button>
+              <button type="button" class="calendar-tab">Flexible</button>
+            </div>
+            
+            <div class="calendars-wrapper d-flex gap-4 justify-content-center">
+              <!-- June 2026 -->
+              <div class="calendar-month">
+                <div class="month-header text-center fw-bold mb-2">June 2026</div>
+                <div class="weekday-grid d-grid text-muted text-center mb-1">
+                  <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+                </div>
+                <div class="days-grid d-grid text-center">
+                  <!-- Empty slots to align days -->
+                  <span class="empty"></span>
+                  <span class="empty"></span>
+                  <span class="empty"></span>
+                  <span class="empty"></span>
+                  <span class="empty"></span>
+                  <!-- Month days -->
+                  <% for(let d=1; d<=30; d++) { %>
+                    <span class="calendar-day" data-month="June" data-day="<%= d %>"><%= d %></span>
+                  <% } %>
+                </div>
+              </div>
+              
+              <!-- July 2026 -->
+              <div class="calendar-month">
+                <div class="month-header text-center fw-bold mb-2">July 2026</div>
+                <div class="weekday-grid d-grid text-muted text-center mb-1">
+                  <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+                </div>
+                <div class="days-grid d-grid text-center">
+                  <!-- Empty slots -->
+                  <span class="empty"></span>
+                  <span class="empty"></span>
+                  <span class="empty"></span>
+                  <!-- Month days -->
+                  <% for(let d=1; d<=31; d++) { %>
+                    <span class="calendar-day" data-month="July" data-day="<%= d %>"><%= d %></span>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Who Popup (Guest Counter) -->
+          <div class="search-popup" id="popup-who">
+            <!-- Row: Adults -->
+            <div class="guest-counter-row d-flex align-items-center justify-content-between py-3 border-bottom">
+              <div class="counter-label d-flex flex-column">
+                <span class="title fw-bold text-dark">Adults</span>
+                <span class="subtitle text-muted">Ages 13 or above</span>
+              </div>
+              <div class="counter-controls d-flex align-items-center gap-3">
+                <button type="button" class="counter-btn dec disabled" data-type="adults" disabled>-</button>
+                <span class="count-value text-dark fw-semibold" id="count-adults">0</span>
+                <button type="button" class="counter-btn inc" data-type="adults">+</button>
+              </div>
+            </div>
+
+            <!-- Row: Children -->
+            <div class="guest-counter-row d-flex align-items-center justify-content-between py-3 border-bottom">
+              <div class="counter-label d-flex flex-column">
+                <span class="title fw-bold text-dark">Children</span>
+                <span class="subtitle text-muted">Ages 2–12</span>
+              </div>
+              <div class="counter-controls d-flex align-items-center gap-3">
+                <button type="button" class="counter-btn dec disabled" data-type="children" disabled>-</button>
+                <span class="count-value text-dark fw-semibold" id="count-children">0</span>
+                <button type="button" class="counter-btn inc" data-type="children">+</button>
+              </div>
+            </div>
+
+            <!-- Row: Infants -->
+            <div class="guest-counter-row d-flex align-items-center justify-content-between py-3 border-bottom">
+              <div class="counter-label d-flex flex-column">
+                <span class="title fw-bold text-dark">Infants</span>
+                <span class="subtitle text-muted">Under 2</span>
+              </div>
+              <div class="counter-controls d-flex align-items-center gap-3">
+                <button type="button" class="counter-btn dec disabled" data-type="infants" disabled>-</button>
+                <span class="count-value text-dark fw-semibold" id="count-infants">0</span>
+                <button type="button" class="counter-btn inc" data-type="infants">+</button>
+              </div>
+            </div>
+
+            <!-- Row: Pets -->
+            <div class="guest-counter-row d-flex align-items-center justify-content-between py-3">
+              <div class="counter-label d-flex flex-column">
+                <span class="title fw-bold text-dark">Pets</span>
+                <span class="subtitle"><a href="#" class="service-animal-link text-muted text-decoration-underline">Bringing a service animal?</a></span>
+              </div>
+              <div class="counter-controls d-flex align-items-center gap-3">
+                <button type="button" class="counter-btn dec disabled" data-type="pets" disabled>-</button>
+                <span class="count-value text-dark fw-semibold" id="count-pets">0</span>
+                <button type="button" class="counter-btn inc" data-type="pets">+</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </form>
     </div>
   </div>
 </nav>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // Select elements
+    const navbar = document.querySelector(".navbar-airbnb");
+    const searchPill = document.querySelector(".search-bar-pill");
+    const searchItems = document.querySelectorAll(".search-item");
+    const popups = document.querySelectorAll(".search-popup");
+    const dividers = document.querySelectorAll(".search-divider");
+    const compactSearch = document.querySelector(".navbar-compact-search");
+    
+    // 1. Scroll Handler for Header states
+    window.addEventListener("scroll", () => {
+      // Toggle collapsed state based on scroll
+      if (window.scrollY > 20) {
+        if (!navbar.classList.contains("navbar-overlay-active")) {
+          navbar.classList.remove("navbar-expanded");
+          navbar.classList.add("navbar-collapsed");
+          // Hide all search popups when collapsing
+          closeAllPopups();
+        }
+      } else {
+        navbar.classList.remove("navbar-collapsed");
+        navbar.classList.add("navbar-expanded");
+        navbar.classList.remove("navbar-overlay-active");
+      }
+    });
+
+    // 2. Compact Search Click to expand back as overlay
+    if (compactSearch) {
+      compactSearch.addEventListener("click", (e) => {
+        e.stopPropagation();
+        navbar.classList.remove("navbar-collapsed");
+        navbar.classList.add("navbar-expanded");
+        navbar.classList.add("navbar-overlay-active");
+        
+        // Auto-focus "Where" section when expanding
+        const whereInput = document.getElementById("search-input-where");
+        if (whereInput) {
+          setTimeout(() => whereInput.focus(), 50);
+        }
+      });
+    }
+
+    // Helper to close all popups & focus states
+    function closeAllPopups() {
+      popups.forEach(p => p.classList.remove("active"));
+      searchItems.forEach(i => i.classList.remove("active"));
+      if (searchPill) searchPill.classList.remove("has-focus");
+      dividers.forEach(div => div.style.opacity = "1");
+    }
+
+    // 3. Search Items Focus and Popup triggers
+    searchItems.forEach((item, index) => {
+      const input = item.querySelector("input");
+      const popupType = item.getAttribute("data-popup");
+      const popup = document.getElementById(`popup-${popupType}`);
+
+      item.addEventListener("click", (e) => {
+        e.stopPropagation();
+        
+        // Focus input if click was on wrapper
+        if (input && e.target !== input) {
+          input.focus();
+        }
+
+        // Set search item as active and show its popup
+        searchItems.forEach(i => i.classList.remove("active"));
+        item.classList.add("active");
+        if (searchPill) searchPill.classList.add("has-focus");
+
+        popups.forEach(p => p.classList.remove("active"));
+        if (popup) popup.classList.add("active");
+
+        // Hide adjacent dividers
+        dividers.forEach(div => div.style.opacity = "1");
+        if (index === 0) {
+          if (dividers[0]) dividers[0].style.opacity = "0";
+        } else if (index === 1) {
+          if (dividers[0]) dividers[0].style.opacity = "0";
+          if (dividers[1]) dividers[1].style.opacity = "0";
+        } else if (index === 2) {
+          if (dividers[1]) dividers[1].style.opacity = "0";
+        }
+      });
+    });
+
+    // Close popups on clicking outside the navbar
+    document.addEventListener("click", (e) => {
+      const form = document.querySelector(".search-form-airbnb");
+      if (form && !form.contains(e.target) && !e.target.closest(".compact-pill")) {
+        closeAllPopups();
+        // If it was overlay expanded, collapse it back
+        if (navbar.classList.contains("navbar-overlay-active") && window.scrollY > 20) {
+          navbar.classList.remove("navbar-expanded");
+          navbar.classList.add("navbar-collapsed");
+          navbar.classList.remove("navbar-overlay-active");
+        }
+      }
+    });
+
+    // 4. "Where" suggested destination options selection
+    const destinationOptions = document.querySelectorAll(".destination-option");
+    const whereInput = document.getElementById("search-input-where");
+    
+    destinationOptions.forEach(opt => {
+      opt.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const value = opt.getAttribute("data-value");
+        if (whereInput) {
+          whereInput.value = value;
+        }
+        
+        // Auto-navigate to "When" dates popup
+        const whenItem = document.getElementById("search-item-when");
+        if (whenItem) {
+          whenItem.click();
+        }
+      });
+    });
+
+    // 5. "When" Mock Calendar Day click highlights
+    const calendarDays = document.querySelectorAll(".calendar-day");
+    const whenInput = document.getElementById("search-input-when");
+    let selectedDays = [];
+
+    calendarDays.forEach(day => {
+      day.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const month = day.getAttribute("data-month");
+        const dateVal = day.getAttribute("data-day");
+        const formattedDate = `${month} ${dateVal}`;
+
+        // Simple single or double day highlight logic
+        if (selectedDays.length >= 2) {
+          calendarDays.forEach(d => d.classList.remove("selected", "selected-range"));
+          selectedDays = [];
+        }
+
+        day.classList.add("selected");
+        selectedDays.push({ element: day, formatted: formattedDate });
+
+        if (selectedDays.length === 1) {
+          if (whenInput) whenInput.value = selectedDays[0].formatted;
+        } else if (selectedDays.length === 2) {
+          // Sort or range display
+          if (whenInput) {
+            whenInput.value = `${selectedDays[0].formatted} - ${selectedDays[1].formatted}`;
+          }
+          // Auto-navigate to "Who" guests popup
+          setTimeout(() => {
+            const whoItem = document.getElementById("search-item-who");
+            if (whoItem) whoItem.click();
+          }, 300);
+        }
+      });
+    });
+
+    // 6. "Who" Guest Counter increments/decrements
+    const countValues = {
+      adults: 0,
+      children: 0,
+      infants: 0,
+      pets: 0
+    };
+
+    const whoInput = document.getElementById("search-input-who");
+    const hiddenGuestsInput = document.getElementById("hidden-guests-count");
+    const selectGuestsLabel = document.querySelector(".select-guests");
+
+    document.querySelectorAll(".counter-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const type = btn.getAttribute("data-type");
+        const isIncrement = btn.classList.contains("inc");
+        
+        if (isIncrement) {
+          countValues[type]++;
+          // If child/infant/pet is added, adults must be at least 1
+          if (type !== "adults" && countValues.adults === 0) {
+            countValues.adults = 1;
+            updateCounterDisplay("adults");
+          }
+        } else {
+          if (countValues[type] > 0) {
+            // Cannot reduce adults below 1 if children/infants/pets are > 0
+            if (type === "adults" && countValues.adults === 1 && (countValues.children > 0 || countValues.infants > 0 || countValues.pets > 0)) {
+              return; // Do nothing
+            }
+            countValues[type]--;
+          }
+        }
+
+        updateCounterDisplay(type);
+        updateWhoInputDisplay();
+      });
+    });
+
+    function updateCounterDisplay(type) {
+      const displaySpan = document.getElementById(`count-${type}`);
+      if (displaySpan) {
+        displaySpan.innerText = countValues[type];
+      }
+
+      // Toggle disable styles/states
+      const decBtn = document.querySelector(`.counter-btn.dec[data-type="${type}"]`);
+      if (decBtn) {
+        let shouldDisable = countValues[type] === 0;
+        // Condition for adult locking
+        if (type === "adults" && countValues.adults === 1 && (countValues.children > 0 || countValues.infants > 0 || countValues.pets > 0)) {
+          shouldDisable = true;
+        }
+
+        if (shouldDisable) {
+          decBtn.classList.add("disabled");
+          decBtn.setAttribute("disabled", "true");
+        } else {
+          decBtn.classList.remove("disabled");
+          decBtn.removeAttribute("disabled");
+        }
+      }
+    }
+
+    function updateWhoInputDisplay() {
+      const totalGuests = countValues.adults + countValues.children;
+      let textParts = [];
+
+      if (totalGuests > 0) {
+        textParts.push(`${totalGuests} guest${totalGuests > 1 ? 's' : ''}`);
+      }
+      if (countValues.infants > 0) {
+        textParts.push(`${countValues.infants} infant${countValues.infants > 1 ? 's' : ''}`);
+      }
+      if (countValues.pets > 0) {
+        textParts.push(`${countValues.pets} pet${countValues.pets > 1 ? 's' : ''}`);
+      }
+
+      const labelText = textParts.join(", ");
+      
+      if (whoInput) {
+        whoInput.value = labelText || "";
+      }
+      if (hiddenGuestsInput) {
+        hiddenGuestsInput.value = totalGuests;
+      }
+      if (selectGuestsLabel) {
+        selectGuestsLabel.innerText = labelText || "Add guests";
+        selectGuestsLabel.classList.toggle("text-muted", totalGuests === 0);
+      }
+    }
+  });
+</script>

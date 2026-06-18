@@ -4,8 +4,38 @@ const User=require("../models/user.js");
 const passport = require("passport");
 const wrapAsync = require("../utils/wrapAsync.js");
 const { isLoggedIn, saveRedirectUrl } = require("../middleware.js");
+const Listing = require("../models/listing.js");
+const Review = require("../models/review.js");
 
 const userController = require("../controllers/user.js");
+
+// Experiences: Show all reviews across all listings
+router.get("/experiences", wrapAsync(async (req, res) => {
+  const listings = await Listing.find({})
+    .populate({
+      path: "reviews",
+      populate: { path: "author" }
+    });
+
+  // Flatten all reviews with listing context
+  const allReviews = [];
+  listings.forEach(listing => {
+    listing.reviews.forEach(review => {
+      allReviews.push({
+        review,
+        listing: {
+          _id: listing._id,
+          title: listing.title,
+          image: listing.image,
+          location: listing.location,
+          country: listing.country,
+        }
+      });
+    });
+  });
+
+  res.render("reviews/index.ejs", { allReviews });
+}));
 
 
 router.get("/", (req, res) => {

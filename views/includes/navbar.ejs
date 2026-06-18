@@ -1,40 +1,54 @@
-<nav class="navbar navbar-expand-lg bg-body-light border-bottom sticky-top navbar-airbnb navbar-expanded">
+<%
+  // Determine if we are on the main listings index (home) page
+  const isHomePage = (typeof currPath !== 'undefined') && (currPath === '/' || currPath === '/listings');
+  const isExperiencesPage = (typeof currPath !== 'undefined') && currPath === '/experiences';
+%>
+
+<nav class="navbar navbar-expand-lg bg-body-light border-bottom sticky-top navbar-airbnb <%= isHomePage ? 'navbar-expanded' : 'navbar-no-search' %>">
   <div class="container-fluid header-container d-flex flex-column">
-    
+
     <!-- Top Row -->
     <div class="header-top-row d-flex align-items-center justify-content-between w-100">
+
       <!-- Left: Brand Logo -->
       <a class="navbar-brand d-flex align-items-center gap-2" href="/listings">
         <i class="fa-regular fa-compass"></i>
         <span class="brand-text">stayria</span>
       </a>
 
-      <!-- Center: Navigation Tabs (Expanded State Only) -->
-      <div class="navbar-center-menu expand-only">
-        <a href="/listings" class="menu-tab active">Homes</a>
-        <a href="#" class="menu-tab">Experiences</a>
-        <a href="#" class="menu-tab">Services</a>
-      </div>
-
-      <!-- Center: Compact Search Bar (Collapsed State Only) -->
-      <div class="navbar-compact-search collapse-only">
-        <div class="compact-pill d-flex align-items-center">
-          <span class="compact-text bold">Anywhere</span>
-          <span class="compact-divider"></span>
-          <span class="compact-text bold">Anytime</span>
-          <span class="compact-divider"></span>
-          <span class="compact-text select-guests text-muted">Add guests</span>
-          <button class="compact-search-btn">
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </button>
+      <% if (isHomePage) { %>
+        <!-- Center: Navigation Tabs (Expanded State Only) -->
+        <div class="navbar-center-menu expand-only">
+          <a href="/listings" class="menu-tab active">Homes</a>
+          <a href="/experiences" class="menu-tab">Experiences</a>
         </div>
-      </div>
+
+        <!-- Center: Compact Search Bar (Collapsed State Only) -->
+        <div class="navbar-compact-search collapse-only">
+          <div class="compact-pill d-flex align-items-center">
+            <span class="compact-text bold">Anywhere</span>
+            <span class="compact-divider"></span>
+            <span class="compact-text bold">Anytime</span>
+            <span class="compact-divider"></span>
+            <span class="compact-text select-guests text-muted">Add guests</span>
+            <button class="compact-search-btn">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div>
+        </div>
+      <% } else if (isExperiencesPage) { %>
+        <!-- Experiences page center label -->
+        <div class="navbar-center-menu" style="display:flex!important;">
+          <a href="/listings" class="menu-tab">Homes</a>
+          <a href="/experiences" class="menu-tab active">Experiences</a>
+        </div>
+      <% } %>
 
       <!-- Right: User Actions / Menu -->
       <div class="header-right-menu d-flex align-items-center gap-3">
         <a class="nav-link become-host-btn d-none d-md-inline" href="/listings/new">Become a host</a>
         <a class="nav-link px-2 d-none d-md-inline" href="#"><i class="fa-solid fa-globe"></i></a>
-        
+
         <!-- User Profile Dropdown Button -->
         <div class="dropdown">
           <button class="btn profile-dropdown-btn d-flex align-items-center gap-2" type="button" id="userMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -48,14 +62,14 @@
             </div>
           </button>
           <ul class="dropdown-menu dropdown-menu-end profile-dropdown-menu" aria-labelledby="userMenuDropdown">
-            <% if(!currUser){%>
+            <% if(!currUser){ %>
               <li><a class="dropdown-item fw-bold" href="/signup">Sign up</a></li>
               <li><a class="dropdown-item" href="/login">Log in</a></li>
-            <%}%>
-            <% if(currUser){%>
+            <% } %>
+            <% if(currUser){ %>
               <li><a class="dropdown-item fw-bold" href="/listings/new">Become a host</a></li>
               <li><a class="dropdown-item" href="/logout">Log out</a></li>
-            <%}%>
+            <% } %>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="/listings">Help Center</a></li>
           </ul>
@@ -63,34 +77,35 @@
       </div>
     </div>
 
-    <!-- Bottom Row (Expanded State - Search Bar Pill & Dropdown Popups) -->
+    <% if (isHomePage) { %>
+    <!-- Bottom Row: Search Bar Pill & Dropdown Popups -->
     <div class="header-bottom-row expand-only w-100 d-flex justify-content-center">
       <form class="search-form-airbnb position-relative" action="/listings" method="GET">
         <div class="search-bar-pill d-flex align-items-center w-100">
-          
+
           <!-- Where Input -->
           <div class="search-item active" id="search-item-where" data-popup="where">
             <label for="search-input-where">Where</label>
             <input type="text" id="search-input-where" name="q" placeholder="Search destinations" autocomplete="off" value="<%= typeof searchPrompt !== 'undefined' ? searchPrompt : '' %>">
           </div>
-          
+
           <div class="search-divider"></div>
-          
+
           <!-- When Input -->
           <div class="search-item" id="search-item-when" data-popup="when">
             <label>When</label>
             <input type="text" id="search-input-when" placeholder="Add dates" readonly>
           </div>
-          
+
           <div class="search-divider"></div>
-          
+
           <!-- Who Input -->
           <div class="search-item" id="search-item-who" data-popup="who">
             <label>Who</label>
             <input type="text" id="search-input-who" placeholder="Add guests" readonly>
             <input type="hidden" name="guests" id="hidden-guests-count" value="0">
           </div>
-          
+
           <!-- Search Submit Button -->
           <button type="submit" class="search-btn">
             <i class="fa-solid fa-magnifying-glass"></i>
@@ -100,9 +115,9 @@
 
         <!-- Popups Container -->
         <div class="popups-container">
-          
+
           <!-- Where Popup -->
-          <div class="search-popup active" id="popup-where">
+          <div class="search-popup" id="popup-where">
             <div class="popup-title">Suggested destinations</div>
             <ul class="destinations-list list-unstyled mb-0">
               <li class="destination-option d-flex align-items-center gap-3" data-value="Nearby">
@@ -149,7 +164,7 @@
               <button type="button" class="calendar-tab active">Dates</button>
               <button type="button" class="calendar-tab">Flexible</button>
             </div>
-            
+
             <div class="calendars-wrapper d-flex gap-4 justify-content-center">
               <!-- June 2026 -->
               <div class="calendar-month">
@@ -158,19 +173,17 @@
                   <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
                 </div>
                 <div class="days-grid d-grid text-center">
-                  <!-- Empty slots to align days -->
                   <span class="empty"></span>
                   <span class="empty"></span>
                   <span class="empty"></span>
                   <span class="empty"></span>
                   <span class="empty"></span>
-                  <!-- Month days -->
                   <% for(let d=1; d<=30; d++) { %>
                     <span class="calendar-day" data-month="June" data-day="<%= d %>"><%= d %></span>
                   <% } %>
                 </div>
               </div>
-              
+
               <!-- July 2026 -->
               <div class="calendar-month">
                 <div class="month-header text-center fw-bold mb-2">July 2026</div>
@@ -178,11 +191,9 @@
                   <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
                 </div>
                 <div class="days-grid d-grid text-center">
-                  <!-- Empty slots -->
                   <span class="empty"></span>
                   <span class="empty"></span>
                   <span class="empty"></span>
-                  <!-- Month days -->
                   <% for(let d=1; d<=31; d++) { %>
                     <span class="calendar-day" data-month="July" data-day="<%= d %>"><%= d %></span>
                   <% } %>
@@ -193,7 +204,6 @@
 
           <!-- Who Popup (Guest Counter) -->
           <div class="search-popup" id="popup-who">
-            <!-- Row: Adults -->
             <div class="guest-counter-row d-flex align-items-center justify-content-between py-3 border-bottom">
               <div class="counter-label d-flex flex-column">
                 <span class="title fw-bold text-dark">Adults</span>
@@ -205,8 +215,6 @@
                 <button type="button" class="counter-btn inc" data-type="adults">+</button>
               </div>
             </div>
-
-            <!-- Row: Children -->
             <div class="guest-counter-row d-flex align-items-center justify-content-between py-3 border-bottom">
               <div class="counter-label d-flex flex-column">
                 <span class="title fw-bold text-dark">Children</span>
@@ -218,8 +226,6 @@
                 <button type="button" class="counter-btn inc" data-type="children">+</button>
               </div>
             </div>
-
-            <!-- Row: Infants -->
             <div class="guest-counter-row d-flex align-items-center justify-content-between py-3 border-bottom">
               <div class="counter-label d-flex flex-column">
                 <span class="title fw-bold text-dark">Infants</span>
@@ -231,8 +237,6 @@
                 <button type="button" class="counter-btn inc" data-type="infants">+</button>
               </div>
             </div>
-
-            <!-- Row: Pets -->
             <div class="guest-counter-row d-flex align-items-center justify-content-between py-3">
               <div class="counter-label d-flex flex-column">
                 <span class="title fw-bold text-dark">Pets</span>
@@ -249,27 +253,27 @@
         </div>
       </form>
     </div>
+    <% } %>
+
   </div>
 </nav>
 
+<% if (isHomePage) { %>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    // Select elements
     const navbar = document.querySelector(".navbar-airbnb");
     const searchPill = document.querySelector(".search-bar-pill");
     const searchItems = document.querySelectorAll(".search-item");
     const popups = document.querySelectorAll(".search-popup");
     const dividers = document.querySelectorAll(".search-divider");
     const compactSearch = document.querySelector(".navbar-compact-search");
-    
-    // 1. Scroll Handler for Header states
+
+    // 1. Scroll Handler
     window.addEventListener("scroll", () => {
-      // Toggle collapsed state based on scroll
       if (window.scrollY > 20) {
         if (!navbar.classList.contains("navbar-overlay-active")) {
           navbar.classList.remove("navbar-expanded");
           navbar.classList.add("navbar-collapsed");
-          // Hide all search popups when collapsing
           closeAllPopups();
         }
       } else {
@@ -279,23 +283,18 @@
       }
     });
 
-    // 2. Compact Search Click to expand back as overlay
+    // 2. Compact Search Click to expand back
     if (compactSearch) {
       compactSearch.addEventListener("click", (e) => {
         e.stopPropagation();
         navbar.classList.remove("navbar-collapsed");
         navbar.classList.add("navbar-expanded");
         navbar.classList.add("navbar-overlay-active");
-        
-        // Auto-focus "Where" section when expanding
         const whereInput = document.getElementById("search-input-where");
-        if (whereInput) {
-          setTimeout(() => whereInput.focus(), 50);
-        }
+        if (whereInput) setTimeout(() => whereInput.focus(), 50);
       });
     }
 
-    // Helper to close all popups & focus states
     function closeAllPopups() {
       popups.forEach(p => p.classList.remove("active"));
       searchItems.forEach(i => i.classList.remove("active"));
@@ -311,13 +310,8 @@
 
       item.addEventListener("click", (e) => {
         e.stopPropagation();
-        
-        // Focus input if click was on wrapper
-        if (input && e.target !== input) {
-          input.focus();
-        }
+        if (input && e.target !== input) input.focus();
 
-        // Set search item as active and show its popup
         searchItems.forEach(i => i.classList.remove("active"));
         item.classList.add("active");
         if (searchPill) searchPill.classList.add("has-focus");
@@ -325,25 +319,20 @@
         popups.forEach(p => p.classList.remove("active"));
         if (popup) popup.classList.add("active");
 
-        // Hide adjacent dividers
         dividers.forEach(div => div.style.opacity = "1");
-        if (index === 0) {
-          if (dividers[0]) dividers[0].style.opacity = "0";
-        } else if (index === 1) {
+        if (index === 0 && dividers[0]) dividers[0].style.opacity = "0";
+        else if (index === 1) {
           if (dividers[0]) dividers[0].style.opacity = "0";
           if (dividers[1]) dividers[1].style.opacity = "0";
-        } else if (index === 2) {
-          if (dividers[1]) dividers[1].style.opacity = "0";
-        }
+        } else if (index === 2 && dividers[1]) dividers[1].style.opacity = "0";
       });
     });
 
-    // Close popups on clicking outside the navbar
+    // Close on outside click
     document.addEventListener("click", (e) => {
       const form = document.querySelector(".search-form-airbnb");
       if (form && !form.contains(e.target) && !e.target.closest(".compact-pill")) {
         closeAllPopups();
-        // If it was overlay expanded, collapse it back
         if (navbar.classList.contains("navbar-overlay-active") && window.scrollY > 20) {
           navbar.classList.remove("navbar-expanded");
           navbar.classList.add("navbar-collapsed");
@@ -352,27 +341,20 @@
       }
     });
 
-    // 4. "Where" suggested destination options selection
+    // 4. Destination option click
     const destinationOptions = document.querySelectorAll(".destination-option");
     const whereInput = document.getElementById("search-input-where");
-    
     destinationOptions.forEach(opt => {
       opt.addEventListener("click", (e) => {
         e.stopPropagation();
         const value = opt.getAttribute("data-value");
-        if (whereInput) {
-          whereInput.value = value;
-        }
-        
-        // Auto-navigate to "When" dates popup
+        if (whereInput) whereInput.value = value;
         const whenItem = document.getElementById("search-item-when");
-        if (whenItem) {
-          whenItem.click();
-        }
+        if (whenItem) whenItem.click();
       });
     });
 
-    // 5. "When" Mock Calendar Day click highlights
+    // 5. Calendar day selection
     const calendarDays = document.querySelectorAll(".calendar-day");
     const whenInput = document.getElementById("search-input-when");
     let selectedDays = [];
@@ -384,23 +366,17 @@
         const dateVal = day.getAttribute("data-day");
         const formattedDate = `${month} ${dateVal}`;
 
-        // Simple single or double day highlight logic
         if (selectedDays.length >= 2) {
           calendarDays.forEach(d => d.classList.remove("selected", "selected-range"));
           selectedDays = [];
         }
-
         day.classList.add("selected");
         selectedDays.push({ element: day, formatted: formattedDate });
 
         if (selectedDays.length === 1) {
           if (whenInput) whenInput.value = selectedDays[0].formatted;
         } else if (selectedDays.length === 2) {
-          // Sort or range display
-          if (whenInput) {
-            whenInput.value = `${selectedDays[0].formatted} - ${selectedDays[1].formatted}`;
-          }
-          // Auto-navigate to "Who" guests popup
+          if (whenInput) whenInput.value = `${selectedDays[0].formatted} - ${selectedDays[1].formatted}`;
           setTimeout(() => {
             const whoItem = document.getElementById("search-item-who");
             if (whoItem) whoItem.click();
@@ -409,14 +385,8 @@
       });
     });
 
-    // 6. "Who" Guest Counter increments/decrements
-    const countValues = {
-      adults: 0,
-      children: 0,
-      infants: 0,
-      pets: 0
-    };
-
+    // 6. Guest Counter
+    const countValues = { adults: 0, children: 0, infants: 0, pets: 0 };
     const whoInput = document.getElementById("search-input-who");
     const hiddenGuestsInput = document.getElementById("hidden-guests-count");
     const selectGuestsLabel = document.querySelector(".select-guests");
@@ -426,24 +396,19 @@
         e.stopPropagation();
         const type = btn.getAttribute("data-type");
         const isIncrement = btn.classList.contains("inc");
-        
+
         if (isIncrement) {
           countValues[type]++;
-          // If child/infant/pet is added, adults must be at least 1
           if (type !== "adults" && countValues.adults === 0) {
             countValues.adults = 1;
             updateCounterDisplay("adults");
           }
         } else {
           if (countValues[type] > 0) {
-            // Cannot reduce adults below 1 if children/infants/pets are > 0
-            if (type === "adults" && countValues.adults === 1 && (countValues.children > 0 || countValues.infants > 0 || countValues.pets > 0)) {
-              return; // Do nothing
-            }
+            if (type === "adults" && countValues.adults === 1 && (countValues.children > 0 || countValues.infants > 0 || countValues.pets > 0)) return;
             countValues[type]--;
           }
         }
-
         updateCounterDisplay(type);
         updateWhoInputDisplay();
       });
@@ -451,51 +416,25 @@
 
     function updateCounterDisplay(type) {
       const displaySpan = document.getElementById(`count-${type}`);
-      if (displaySpan) {
-        displaySpan.innerText = countValues[type];
-      }
-
-      // Toggle disable styles/states
+      if (displaySpan) displaySpan.innerText = countValues[type];
       const decBtn = document.querySelector(`.counter-btn.dec[data-type="${type}"]`);
       if (decBtn) {
         let shouldDisable = countValues[type] === 0;
-        // Condition for adult locking
-        if (type === "adults" && countValues.adults === 1 && (countValues.children > 0 || countValues.infants > 0 || countValues.pets > 0)) {
-          shouldDisable = true;
-        }
-
-        if (shouldDisable) {
-          decBtn.classList.add("disabled");
-          decBtn.setAttribute("disabled", "true");
-        } else {
-          decBtn.classList.remove("disabled");
-          decBtn.removeAttribute("disabled");
-        }
+        if (type === "adults" && countValues.adults === 1 && (countValues.children > 0 || countValues.infants > 0 || countValues.pets > 0)) shouldDisable = true;
+        if (shouldDisable) { decBtn.classList.add("disabled"); decBtn.setAttribute("disabled", "true"); }
+        else { decBtn.classList.remove("disabled"); decBtn.removeAttribute("disabled"); }
       }
     }
 
     function updateWhoInputDisplay() {
       const totalGuests = countValues.adults + countValues.children;
       let textParts = [];
-
-      if (totalGuests > 0) {
-        textParts.push(`${totalGuests} guest${totalGuests > 1 ? 's' : ''}`);
-      }
-      if (countValues.infants > 0) {
-        textParts.push(`${countValues.infants} infant${countValues.infants > 1 ? 's' : ''}`);
-      }
-      if (countValues.pets > 0) {
-        textParts.push(`${countValues.pets} pet${countValues.pets > 1 ? 's' : ''}`);
-      }
-
+      if (totalGuests > 0) textParts.push(`${totalGuests} guest${totalGuests > 1 ? 's' : ''}`);
+      if (countValues.infants > 0) textParts.push(`${countValues.infants} infant${countValues.infants > 1 ? 's' : ''}`);
+      if (countValues.pets > 0) textParts.push(`${countValues.pets} pet${countValues.pets > 1 ? 's' : ''}`);
       const labelText = textParts.join(", ");
-      
-      if (whoInput) {
-        whoInput.value = labelText || "";
-      }
-      if (hiddenGuestsInput) {
-        hiddenGuestsInput.value = totalGuests;
-      }
+      if (whoInput) whoInput.value = labelText || "";
+      if (hiddenGuestsInput) hiddenGuestsInput.value = totalGuests;
       if (selectGuestsLabel) {
         selectGuestsLabel.innerText = labelText || "Add guests";
         selectGuestsLabel.classList.toggle("text-muted", totalGuests === 0);
@@ -503,3 +442,4 @@
     }
   });
 </script>
+<% } %>

@@ -1,0 +1,349 @@
+<%layout("/layouts/boilerplate")%>
+
+<style>
+  /* Break hero out of parent .container */
+  .exp-hero-breakout {
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    background: linear-gradient(135deg, #ff385c 0%, #bd1e59 60%, #1a1a2e 100%);
+    padding: 72px 24px 56px;
+    margin-bottom: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .exp-hero-breakout::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  .exp-hero-inner {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    color: white;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .exp-hero-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .exp-hero-inner h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    margin-bottom: 12px;
+    line-height: 1.1;
+  }
+  .exp-hero-inner p {
+    font-size: 1.1rem;
+    opacity: 0.85;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* Stats bar */
+  .exp-stats-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .exp-stats-bar h2 {
+    font-size: 1.45rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 2px;
+  }
+  .exp-stats-bar p {
+    font-size: 0.88rem;
+    color: #717171;
+    margin: 0;
+  }
+  .exp-explore-btn {
+    background: #fe424d;
+    color: white;
+    border: none;
+    border-radius: 100px;
+    padding: 12px 24px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s ease, transform 0.15s ease;
+    white-space: nowrap;
+  }
+  .exp-explore-btn:hover {
+    background: #e03040;
+    color: white;
+    transform: scale(1.03);
+  }
+
+  /* Reviews grid */
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+    padding-bottom: 60px;
+  }
+
+  /* Review card */
+  .exp-review-card {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    overflow: hidden;
+    transition: transform 0.25s cubic-bezier(0.2,0.8,0.2,1), box-shadow 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #f0f0f0;
+  }
+  .exp-review-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.13);
+  }
+
+  /* Listing image */
+  .exp-card-img {
+    width: 100%;
+    height: 175px;
+    object-fit: cover;
+    display: block;
+    background: #f1f1f1;
+    transition: transform 0.35s ease;
+  }
+  .exp-review-card:hover .exp-card-img {
+    transform: scale(1.04);
+  }
+  .exp-card-img-wrap {
+    overflow: hidden;
+    height: 175px;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .exp-card-img-placeholder {
+    width: 100%;
+    height: 175px;
+    background: linear-gradient(135deg, #ffe0e6, #ffd6cc);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: #fe424d;
+  }
+
+  /* Card body */
+  .exp-card-body {
+    padding: 18px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  /* Listing meta */
+  .exp-listing-meta {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .exp-listing-title a {
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: #222222;
+    text-decoration: none;
+    line-height: 1.3;
+  }
+  .exp-listing-title a:hover { color: #fe424d; }
+  .exp-listing-location {
+    font-size: 0.78rem;
+    color: #717171;
+    margin-top: 2px;
+  }
+
+  /* Stars */
+  .exp-stars {
+    display: flex;
+    gap: 1px;
+    flex-shrink: 0;
+  }
+  .exp-stars i {
+    font-size: 12px;
+    color: #fe424d;
+  }
+  .exp-stars i.empty { color: #e0e0e0; }
+
+  /* Comment */
+  .exp-comment {
+    font-size: 0.92rem;
+    color: #444;
+    line-height: 1.65;
+    flex: 1;
+    margin-bottom: 16px;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Reviewer row */
+  .exp-reviewer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-top: 14px;
+    border-top: 1px solid #f0f0f0;
+    margin-top: auto;
+  }
+  .exp-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fe424d, #bd1e59);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 0.82rem;
+    flex-shrink: 0;
+  }
+  .exp-reviewer-name {
+    font-weight: 600;
+    font-size: 0.87rem;
+    color: #222;
+  }
+  .exp-reviewer-date {
+    font-size: 0.77rem;
+    color: #aaa;
+    margin-left: auto;
+  }
+
+  /* Empty state */
+  .exp-empty {
+    text-align: center;
+    padding: 80px 20px;
+  }
+  .exp-empty i {
+    font-size: 3.5rem;
+    color: #e8e8e8;
+    display: block;
+    margin-bottom: 20px;
+  }
+  .exp-empty h3 {
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: #333;
+    margin-bottom: 8px;
+  }
+  .exp-empty p { color: #717171; }
+
+  @media (max-width: 768px) {
+    .exp-hero-inner h1 { font-size: 2rem; }
+    .reviews-grid { grid-template-columns: 1fr; }
+    .exp-hero-breakout { padding: 48px 16px 40px; }
+  }
+</style>
+
+<!-- Hero — breaks out of parent container -->
+<div class="exp-hero-breakout">
+  <div class="exp-hero-inner">
+    <div class="exp-hero-badge">⭐ Guest Experiences</div>
+    <h1>What guests are saying</h1>
+    <p>Real reviews from real stays. Discover the moments that made every trip unforgettable.</p>
+  </div>
+</div>
+
+<% if (allReviews.length === 0) { %>
+  <div class="exp-empty">
+    <i class="fa-regular fa-star"></i>
+    <h3>No reviews yet</h3>
+    <p>Be the first to stay and share your experience!</p>
+    <a href="/listings" class="exp-explore-btn mt-3">
+      <i class="fa-solid fa-compass"></i> Browse listings
+    </a>
+  </div>
+<% } else { %>
+
+  <!-- Stats bar -->
+  <div class="exp-stats-bar">
+    <div>
+      <h2><%= allReviews.length %> review<%= allReviews.length !== 1 ? 's' : '' %> across all stays</h2>
+      <p>From our community of guests around the world</p>
+    </div>
+    <a href="/listings" class="exp-explore-btn">
+      <i class="fa-solid fa-compass"></i> Explore listings
+    </a>
+  </div>
+
+  <!-- Reviews grid -->
+  <div class="reviews-grid">
+    <% allReviews.forEach(({ review, listing }) => { %>
+      <div class="exp-review-card">
+
+        <!-- Listing image -->
+        <a href="/listings/<%= listing._id %>" class="exp-card-img-wrap">
+          <% if (listing.image && listing.image.url) { %>
+            <img class="exp-card-img" src="<%= listing.image.url %>" alt="<%= listing.title %>" loading="lazy">
+          <% } else { %>
+            <div class="exp-card-img-placeholder"><i class="fa-solid fa-house"></i></div>
+          <% } %>
+        </a>
+
+        <div class="exp-card-body">
+          <!-- Listing meta + stars -->
+          <div class="exp-listing-meta">
+            <div class="exp-listing-title">
+              <a href="/listings/<%= listing._id %>"><%= listing.title %></a>
+              <div class="exp-listing-location">
+                <%= listing.location %><% if(listing.country) { %>, <%= listing.country %><% } %>
+              </div>
+            </div>
+            <div class="exp-stars">
+              <% for(let s = 1; s <= 5; s++) { %>
+                <i class="fa-solid fa-star <%= s <= review.rating ? '' : 'empty' %>"></i>
+              <% } %>
+            </div>
+          </div>
+
+          <!-- Comment -->
+          <p class="exp-comment">"<%= review.comment %>"</p>
+
+          <!-- Author -->
+          <div class="exp-reviewer">
+            <div class="exp-avatar">
+              <%= (review.author && review.author.username) ? review.author.username.substring(0,1).toUpperCase() : 'G' %>
+            </div>
+            <div class="exp-reviewer-name">
+              <%= review.author ? review.author.username : 'Guest' %>
+            </div>
+            <% if (review.createdAt) { %>
+              <span class="exp-reviewer-date">
+                <%= new Date(review.createdAt).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }) %>
+              </span>
+            <% } %>
+          </div>
+        </div>
+
+      </div>
+    <% }) %>
+  </div>
+
+<% } %>

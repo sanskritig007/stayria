@@ -737,7 +737,7 @@
         <h1><%= listing.title %></h1>
         <div class="listing-subtitle">
           <% const cat = listing.category ? listing.category.charAt(0).toUpperCase() + listing.category.slice(1) : 'Property'; %>
-          <%= cat %> &nbsp; .&nbsp; <%= listing.location %><% if(listing.country){ %>, <%= listing.country %><% } %>
+          <%= cat %> &nbsp;·&nbsp; <%= listing.location %><% if(listing.country){ %>, <%= listing.country %><% } %>
         </div>
         <div class="listing-rating-row">
           <% const avgRating = listing.reviews.length > 0

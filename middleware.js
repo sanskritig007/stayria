@@ -37,7 +37,7 @@ module.exports.validateListing=(req,res,next)=>{
     
     if(error){
         let errMsg = error.details.map((el)=>el.message).join(",");
-        throw new ExpressError(400,error);
+        throw new ExpressError(400, errMsg);
     }else{
         next();
     }
@@ -48,7 +48,7 @@ module.exports.validateReview=(req,res,next)=>{
     
     if(error){
         let errMsg = error.details.map((el)=>el.message).join(",");
-        throw new ExpressError(errMsg,400);
+        throw new ExpressError(400, errMsg);
     }else{
         next();
     }

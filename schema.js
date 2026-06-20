@@ -24,6 +24,7 @@ module.exports.listingSchema = Joi.object({
 
     image: Joi.string().allow("", null),
   }).required(),
+  deleteImages: Joi.any()
 });
 module.exports.reviewSchema = Joi.object({
   review: Joi.object({

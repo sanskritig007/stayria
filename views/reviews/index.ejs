@@ -300,8 +300,8 @@
 
         <!-- Listing image -->
         <a href="/listings/<%= listing._id %>" class="exp-card-img-wrap">
-          <% if (listing.image && listing.image.url) { %>
-            <img class="exp-card-img" src="<%= listing.image.url %>" alt="<%= listing.title %>" loading="lazy">
+          <% if ((listing.images && listing.images.length > 0) || (listing.image && listing.image.url)) { %>
+            <img class="exp-card-img" src="<%= (listing.images && listing.images.length > 0) ? listing.images[0].url : listing.image.url %>" alt="<%= listing.title %>" loading="lazy">
           <% } else { %>
             <div class="exp-card-img-placeholder"><i class="fa-solid fa-house"></i></div>
           <% } %>

@@ -701,29 +701,60 @@
   </nav>
 
   <!-- ── Photo Grid ── -->
+  <%
+    let displayImgs = [];
+    if (listing.images && listing.images.length > 0) {
+      displayImgs = listing.images.map(i => i.url);
+    } else if (listing.image && listing.image.url) {
+      displayImgs = [listing.image.url];
+    }
+  %>
+  <style>
+    .photo-single-wrap {
+      width: 100%;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 0;
+      background-color: #f7f7f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .photo-single-wrap img {
+      max-width: 100%;
+      height: auto;
+      max-height: 70vh;
+      object-fit: contain;
+      display: block;
+    }
+  </style>
   <div id="section-photos" class="mb-0">
-    <div class="photo-grid" style="position:relative;">
-      <!-- Main large photo -->
-      <div class="photo-grid-main">
-        <img src="<%= listing.image.url %>" alt="<%= listing.title %>">
+    <% if (displayImgs.length === 1) { %>
+      <div class="photo-single-wrap">
+        <img src="<%= displayImgs[0] %>" alt="<%= listing.title %>">
       </div>
-      <!-- 4 duplicate sub-photos (same image, different filter to simulate gallery) -->
-      <div class="photo-grid-sub" style="filter:brightness(0.92) saturate(1.1);">
-        <img src="<%= listing.image.url %>" alt="<%= listing.title %>">
+    <% } else { %>
+      <div class="photo-grid" style="position:relative;">
+        <div class="photo-grid-main">
+          <img src="<%= displayImgs[0] %>" alt="<%= listing.title %>">
+        </div>
+        <div class="photo-grid-sub" <%= !displayImgs[1] ? 'style="filter:brightness(0.92) saturate(1.1);"' : '' %>>
+          <img src="<%= displayImgs[1] || displayImgs[0] %>" alt="<%= listing.title %>">
+        </div>
+        <div class="photo-grid-sub" <%= !displayImgs[2] ? 'style="filter:brightness(0.85) saturate(1.2);"' : '' %>>
+          <img src="<%= displayImgs[2] || displayImgs[0] %>" alt="<%= listing.title %>">
+        </div>
+        <div class="photo-grid-sub" <%= !displayImgs[3] ? 'style="filter:brightness(0.88);"' : '' %>>
+          <img src="<%= displayImgs[3] || displayImgs[0] %>" alt="<%= listing.title %>">
+        </div>
+        <div class="photo-grid-sub dim-overlay" <%= !displayImgs[4] ? 'style="filter:brightness(0.8);"' : '' %>>
+          <img src="<%= displayImgs[4] || displayImgs[0] %>" alt="<%= listing.title %>">
+          <a href="<%= displayImgs[0] %>" target="_blank" class="show-all-photos-btn">
+            <i class="fa-solid fa-border-all"></i> Show all <%= displayImgs.length %> photos
+          </a>
+        </div>
       </div>
-      <div class="photo-grid-sub" style="filter:brightness(0.85) saturate(1.2) hue-rotate(10deg);">
-        <img src="<%= listing.image.url %>" alt="<%= listing.title %>">
-      </div>
-      <div class="photo-grid-sub" style="filter:brightness(0.88) saturate(1.15) contrast(1.05);">
-        <img src="<%= listing.image.url %>" alt="<%= listing.title %>">
-      </div>
-      <div class="photo-grid-sub dim-overlay" style="filter:brightness(0.8) saturate(1.1);">
-        <img src="<%= listing.image.url %>" alt="<%= listing.title %>">
-        <a href="<%= listing.image.url %>" target="_blank" class="show-all-photos-btn">
-          <i class="fa-solid fa-border-all"></i> Show all photos
-        </a>
-      </div>
-    </div>
+    <% } %>
   </div>
 
   <!-- ── Two-column layout ── -->

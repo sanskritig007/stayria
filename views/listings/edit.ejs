@@ -11,16 +11,49 @@
         <textarea name="listing[description]" class="form-control" required><%=listing.description%></textarea>
         <div class="invalid-feedback">Please enter a short description</div>
     </div>
+    <style>
+      .edit-image-grid { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 15px; }
+      .edit-image-wrapper { position: relative; width: 150px; height: 120px; border-radius: 8px; overflow: hidden; border: 1px solid #ddd; }
+      .edit-image-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.2s; }
+      .delete-img-cb { display: none; }
+      .delete-img-btn { position: absolute; top: 5px; right: 5px; background: rgba(255, 255, 255, 0.9); color: #fe424d; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: all 0.2s; z-index: 2; }
+      .delete-img-btn:hover { background: #fe424d; color: white; }
+      .delete-img-cb:checked + .delete-img-btn { background: #fe424d; color: white; transform: scale(1.1); }
+      .delete-img-cb:checked ~ img { opacity: 0.4; filter: grayscale(100%); }
+      .delete-overlay-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fe424d; font-weight: bold; font-size: 13px; display: none; pointer-events: none; background: rgba(255,255,255,0.8); padding: 4px 8px; border-radius: 4px; z-index: 3; }
+      .delete-img-cb:checked ~ .delete-overlay-text { display: block; }
+    </style>
     <div class="mb-3">
-        Original Listing Image<br/>
-         <img src="<%=originalImageUrl%>">
+        <label class="form-label">Manage Existing Images</label>
+        <div class="edit-image-grid">
+            <% if(listing.images && listing.images.length > 0) { %>
+                <% listing.images.forEach((img, i) => { %>
+                    <div class="edit-image-wrapper">
+                        <input type="checkbox" id="delete-img-<%= i %>" class="delete-img-cb" name="deleteImages" value="<%= img.filename %>">
+                        <label for="delete-img-<%= i %>" class="delete-img-btn" title="Delete this image"><i class="fa-solid fa-xmark"></i></label>
+                        <img src="<%= img.url.replace('/upload', '/upload/w_250') %>">
+                        <div class="delete-overlay-text">Deleted</div>
+                    </div>
+                <% }) %>
+            <% } else if (listing.image && listing.image.url) { %>
+                <div class="edit-image-wrapper">
+                    <input type="checkbox" id="delete-img-0" class="delete-img-cb" name="deleteImages" value="<%= listing.image.filename %>">
+                    <label for="delete-img-0" class="delete-img-btn" title="Delete this image"><i class="fa-solid fa-xmark"></i></label>
+                    <img src="<%= listing.image.url.replace('/upload', '/upload/w_250') %>">
+                    <div class="delete-overlay-text">Deleted</div>
+                </div>
+            <% } %>
+        </div>
     </div>
     <div class="mb-3">
-        <label for="image" class= "form-label"> Upload New Image</label>
+        <label for="image" class= "form-label">Upload Additional Images</label>
         <input 
-         name="listing[image]" 
+         name="listing[images]" 
          type="file" 
+         multiple
+         accept="image/png, image/jpeg, image/jpg"
          class="form-control">
+         <div class="form-text text-muted">You can upload more images (Max 5 total per listing).</div>
     </div>
     <div class="mb-3">
         <label for="price" class= "form-label">Price</label>

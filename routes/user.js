@@ -27,6 +27,7 @@ router.get("/experiences", wrapAsync(async (req, res) => {
           _id: listing._id,
           title: listing.title,
           image: listing.image,
+          images: listing.images,
           location: listing.location,
           country: listing.country,
         }

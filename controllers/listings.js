@@ -98,16 +98,23 @@ module.exports.showListing = async(req,res)=>{
 
 module.exports.createListing = async(req,res,next)=>{
     const { location, country } = req.body.listing;
-
-    let url= req.file.path;
-    let filename= req.file.filename;
     
     const newListing=new Listing(req.body.listing);
     newListing.owner = req.user._id;
-    newListing.image={url,filename};
     newListing.geometry = await geocodeListing(location, country);
+    
+    if (req.files && req.files.length > 0) {
+        newListing.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
+        newListing.image = newListing.images[0]; // legacy fallback
+    } else if (req.file) {
+        let url = req.file.path;
+        let filename = req.file.filename;
+        newListing.image = {url, filename};
+        newListing.images = [{url, filename}];
+    }
+
     let savedListing=await newListing.save();
-      console.log(savedListing)
+    console.log(savedListing)
     req.flash("success","New Listing Created!!")
     res.redirect("/listings");
 }
@@ -139,21 +146,46 @@ module.exports.updateListing=async (req, res) => {
     const country = (fields.country ?? listing.country).trim();
     const geometry = await geocodeListing(location, country);
 
-    const update = {
-        title: fields.title ?? listing.title,
-        description: fields.description ?? listing.description,
-        price: fields.price ?? listing.price,
-        location,
-        country,
-        category: fields.category ?? listing.category,
-        geometry,
-    };
+    listing.title = fields.title ?? listing.title;
+    listing.description = fields.description ?? listing.description;
+    listing.price = fields.price ?? listing.price;
+    listing.location = location;
+    listing.country = country;
+    listing.category = fields.category ?? listing.category;
+    listing.geometry = geometry;
 
-    if (req.file) {
-        update.image = { url: req.file.path, filename: req.file.filename };
+    // Migrate legacy image to the images array if it's empty
+    if (listing.images.length === 0 && listing.image && listing.image.url) {
+        listing.images.push(listing.image);
     }
 
-    await Listing.findByIdAndUpdate(id, update, { runValidators: true });
+    // Handle deleted images
+    if (req.body.deleteImages) {
+        const deleteImages = Array.isArray(req.body.deleteImages) ? req.body.deleteImages : [req.body.deleteImages];
+        listing.images = listing.images.filter(img => !deleteImages.includes(img.filename));
+    }
+
+    // Handle new images
+    if (req.files && req.files.length > 0) {
+        const newImages = req.files.map(f => ({ url: f.path, filename: f.filename }));
+        listing.images.push(...newImages);
+    } else if (req.file) {
+        listing.images.push({ url: req.file.path, filename: req.file.filename });
+    }
+
+    // Enforce 5 images limit
+    if (listing.images.length > 5) {
+        listing.images = listing.images.slice(0, 5);
+    }
+
+    // Ensure backwards compatibility
+    if (listing.images.length > 0) {
+        listing.image = listing.images[0];
+    } else if (!listing.image || !listing.image.url) {
+        // Fallback placeholder logic could go here
+    }
+
+    await listing.save();
 
     req.flash("success", "Listing Updated!");
     res.redirect(`/listings/${id}`);

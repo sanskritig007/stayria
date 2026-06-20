@@ -15,8 +15,15 @@
          <div class="invalid-feedback">Please enter a short description</div>
        </div>
        <div class="mb-3">
-         <label for="image" class="form-label"> Upload Image</label>
-         <input name="listing[image]" type="file" class="form-control" >
+         <label for="image" class= "form-label">Upload Listing Images</label>
+        <input 
+         name="listing[images]" 
+         type="file" 
+         class="form-control"
+         multiple
+         accept="image/png, image/jpeg, image/jpg"
+         required>
+         <div class="form-text text-muted">You can upload up to 5 images. First image will be the main thumbnail.</div>
        </div>
        <div class="row">
           <div class="mb-3 col-4">

@@ -11,27 +11,27 @@ const upload = multer({ storage })
 
 
 //implementing Router.route ( to make it more compact)
-router
- .route("/")
- .get( wrapAsync(listingController.index) )//hamare root route ke pass jaise hi GET req aaye waise hi index naam ka fuction ya jo call back h vo exicute hojye 
- .post(
-    isLoggedIn,
-    upload.single("listing[image]"),
-    validateListing,
-    wrapAsync(listingController.createListing)
-);//create
+ router
+  .route("/")
+  .get( wrapAsync(listingController.index) )//hamare root route ke pass jaise hi GET req aaye waise hi index naam ka fuction ya jo call back h vo exicute hojye 
+  .post(
+     isLoggedIn,
+     upload.array("listing[images]", 5),
+     validateListing,
+     wrapAsync(listingController.createListing)
+ );//create
 
-//new route
-router.get("/new",isLoggedIn,listingController.renderNewForm);//id wale se uper rkhege warna router wala logic h usse id ki tarah interpret krega aur jo new wala route h usse database ke ander search krne ki kosis krega to error aaskta h .
-
-router.route("/:id")
-.get(wrapAsync(listingController.showListing))
-.put(
-    isLoggedIn,
-    isOwner,
-    upload.single("listing[image]"),
-    validateListing,
-    wrapAsync(listingController.updateListing))
+ //new route
+ router.get("/new",isLoggedIn,listingController.renderNewForm);//id wale se uper rkhege warna router wala logic h usse id ki tarah interpret krega aur jo new wala route h usse database ke ander search krne ki kosis krega to error aaskta h .
+ 
+ router.route("/:id")
+ .get(wrapAsync(listingController.showListing))
+ .put(
+     isLoggedIn,
+     isOwner,
+     upload.array("listing[images]", 5),
+     validateListing,
+     wrapAsync(listingController.updateListing))
 .delete(isLoggedIn,isOwner,wrapAsync(listingController.destroyListing))
 
 //edit route 

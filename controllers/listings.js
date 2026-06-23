@@ -59,22 +59,45 @@ module.exports.renderNewForm = (req,res)=>{
 }
 
 module.exports.index = async (req, res) => {
-  const { category, q } = req.query;
+  const { category, q, guests, checkIn, checkOut } = req.query;
 
-  let allListings;
+  let query = {};
 
   if (category) {
-    allListings = await Listing.find({ category });
-  } else if (q) {
-    allListings = await Listing.find({
+    query.category = category;
+  }
+  
+  if (q) {
+    query.$or = [
+      { title: { $regex: q, $options: "i" } },
+      { location: { $regex: q, $options: "i" } },
+      { country: { $regex: q, $options: "i" } }
+    ];
+  }
+  
+  if (guests && Number(guests) > 0) {
+    query.maxGuests = { $gte: Number(guests) };
+  }
+
+  let allListings = await Listing.find(query);
+
+  if (checkIn && checkOut) {
+    const Booking = require("../models/booking.js");
+    const checkInDate = new Date(checkIn);
+    const checkOutDate = new Date(checkOut);
+    
+    // Find bookings that overlap with requested dates
+    const overlappingBookings = await Booking.find({
+      status: "confirmed",
       $or: [
-        { title: { $regex: q, $options: "i" } },
-        { location: { $regex: q, $options: "i" } },
-        { country: { $regex: q, $options: "i" } }
+        { checkIn: { $lt: checkOutDate }, checkOut: { $gt: checkInDate } }
       ]
     });
-  } else {
-    allListings = await Listing.find({});
+    
+    const bookedListingIds = overlappingBookings.map(b => b.listing.toString());
+    
+    // Filter out listings that are booked
+    allListings = allListings.filter(listing => !bookedListingIds.includes(listing._id.toString()));
   }
 
   res.render("listings/index", { allListings, searchPrompt: q || "" });

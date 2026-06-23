@@ -97,6 +97,8 @@
           <div class="search-item" id="search-item-when" data-popup="when">
             <label>When</label>
             <input type="text" id="search-input-when" placeholder="Add dates" readonly>
+            <input type="hidden" name="checkIn" id="hidden-search-checkin">
+            <input type="hidden" name="checkOut" id="hidden-search-checkout">
           </div>
 
           <div class="search-divider"></div>
@@ -373,12 +375,22 @@
           selectedDays = [];
         }
         day.classList.add("selected");
-        selectedDays.push({ element: day, formatted: formattedDate });
+        // We assume year is current year for the dummy calendar
+        const year = new Date().getFullYear();
+        const fullDateString = `${month} ${dateVal}, ${year}`;
+        const dateObj = new Date(fullDateString);
+        
+        selectedDays.push({ element: day, formatted: formattedDate, dateObj: dateObj });
 
         if (selectedDays.length === 1) {
           if (whenInput) whenInput.value = selectedDays[0].formatted;
+          document.getElementById("hidden-search-checkin").value = selectedDays[0].dateObj.toISOString();
+          document.getElementById("hidden-search-checkout").value = "";
         } else if (selectedDays.length === 2) {
           if (whenInput) whenInput.value = `${selectedDays[0].formatted} - ${selectedDays[1].formatted}`;
+          document.getElementById("hidden-search-checkin").value = selectedDays[0].dateObj.toISOString();
+          document.getElementById("hidden-search-checkout").value = selectedDays[1].dateObj.toISOString();
+          
           setTimeout(() => {
             const whoItem = document.getElementById("search-item-who");
             if (whoItem) whoItem.click();

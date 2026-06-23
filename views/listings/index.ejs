@@ -34,6 +34,23 @@
   gap: 10px;
   white-space:nowrap;
 }
+.wishlist-heart {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 1.5rem;
+  color: white;
+  text-shadow: 0 0 5px rgba(0,0,0,0.5);
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.2s, color 0.2s;
+}
+.wishlist-heart:hover {
+  transform: scale(1.1);
+}
+.wishlist-heart.saved {
+  color: #fe424d;
+}
 </style>
     <div id="filters">
        <a href="/listings?category=trending" class="filter">
@@ -86,8 +103,16 @@
         <% for(let listing of allListings){%>
         <a href="/listings/<%=listing._id%>" class="listing-link">
          <div class="card col listing-card">
+             <div class="card-img-overlay">
+                 <% 
+                    let isSaved = false;
+                    if(currUser && currUser.wishlist && currUser.wishlist.includes(listing._id)) {
+                        isSaved = true;
+                    }
+                 %>
+                 <i class="fa-heart wishlist-heart <%= isSaved ? 'fa-solid saved' : 'fa-regular' %>" data-id="<%= listing._id %>"></i>
+             </div>
              <img src="<%- (listing.images && listing.images.length > 0) ? listing.images[0].url : (listing.image ? listing.image.url : '') %>" class="card-img-top" alt="listing_image" style="height: 20rem"/>
-             <div class="card-img-overlay"></div>
              <div class="card-body">  
                   <p class="card-text">
                      <b><%= listing.title%></b><br/>
@@ -113,4 +138,36 @@
       }
     }
   })
+
+  // Wishlist AJAX Toggle
+  document.querySelectorAll('.wishlist-heart').forEach(heart => {
+      heart.addEventListener('click', async (e) => {
+          e.preventDefault(); // Prevent navigating to the listing link
+          const currUser = <%- currUser ? 'true' : 'false' %>;
+          if (!currUser) {
+              window.location.href = '/login';
+              return;
+          }
+          
+          const listingId = heart.getAttribute('data-id');
+          try {
+              const response = await fetch(`/wishlist/${listingId}/toggle`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' }
+              });
+              const data = await response.json();
+              if (data.success) {
+                  if (data.wishlisted) {
+                      heart.classList.remove('fa-regular');
+                      heart.classList.add('fa-solid', 'saved');
+                  } else {
+                      heart.classList.remove('fa-solid', 'saved');
+                      heart.classList.add('fa-regular');
+                  }
+              }
+          } catch (error) {
+              console.error('Error toggling wishlist:', error);
+          }
+      });
+  });
 </script>

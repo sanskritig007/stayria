@@ -765,9 +765,10 @@
     <div class="listing-main-col">
 
       <!-- Title block -->
-      <div class="listing-title-block">
-        <h1><%= listing.title %></h1>
-        <div class="listing-subtitle">
+      <div class="listing-title-block d-flex justify-content-between align-items-start flex-wrap">
+        <div>
+          <h1><%= listing.title %></h1>
+          <div class="listing-subtitle">
           <% const cat = listing.category ? listing.category.charAt(0).toUpperCase() + listing.category.slice(1) : 'Property'; %>
           <%= cat %> &nbsp;·&nbsp; <%= listing.location %><% if(listing.country){ %>, <%= listing.country %><% } %>
         </div>
@@ -785,6 +786,20 @@
           <% } else { %>
             <span style="color:#717171;font-size:0.9rem;">No reviews yet</span>
           <% } %>
+        </div>
+        </div>
+        
+        <div class="save-share-actions d-flex gap-3 mt-2">
+            <% 
+               let isSaved = false;
+               if(currUser && currUser.wishlist && currUser.wishlist.includes(listing._id)) {
+                   isSaved = true;
+               }
+            %>
+            <button class="btn btn-light rounded-pill border shadow-sm wishlist-toggle-btn d-flex align-items-center gap-2 px-3 py-2" data-id="<%= listing._id %>" style="transition: all 0.2s;">
+                <i class="fa-heart <%= isSaved ? 'fa-solid text-danger' : 'fa-regular' %> wishlist-icon" style="font-size: 1.1rem;"></i>
+                <span style="font-weight: 500; font-size: 0.9rem;"><%= isSaved ? 'Saved' : 'Save' %></span>
+            </button>
         </div>
       </div>
 
@@ -837,7 +852,7 @@
 
       <!-- Description -->
       <div class="description-block">
-        <p id="desc-text" style="overflow:hidden;max-height:120px;">
+        <p id="desc-text" style="overflow:hidden;max-height:120px; white-space: pre-wrap; font-family: inherit;">
           <%= listing.description %>
         </p>
         <button class="show-more-btn" id="desc-toggle" onclick="toggleDesc()">
@@ -868,6 +883,7 @@
     <!-- ════════ RIGHT COLUMN — Booking Card ════════ -->
     <div class="booking-card-col">
       <div class="booking-card-sticky">
+        <form action="/bookings/listings/<%= listing._id %>/bookings" method="POST" id="booking-form">
         <div class="booking-card">
 
           <!-- Price includes badge -->
@@ -878,12 +894,13 @@
 
           <!-- Price -->
           <div class="booking-price-row">
-            <span class="price-main">&#8377;<%= listing.price.toLocaleString("en-IN") %></span>
+            <span class="price-main" id="display-price-night" data-base-price="<%= listing.price %>">&#8377;<%= listing.price.toLocaleString("en-IN") %></span>
             <span class="price-sub">/ night</span>
           </div>
 
-          <!-- Date grid -->
-          <div class="date-grid">
+          <!-- Date grid with Flatpickr -->
+          <div class="date-grid" style="position: relative;">
+            <input type="text" id="flatpickr-date-input" placeholder="Select dates" style="position:absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; z-index:5;" readonly>
             <div class="date-grid-row">
               <div class="date-cell">
                 <div class="cell-label">Check-in</div>
@@ -900,34 +917,48 @@
           <div class="guests-row">
             <div>
               <div class="cell-label">Guests</div>
-              <div class="cell-value">1 guest</div>
+              <div class="cell-value">
+                <select name="guests" id="booking-guests-select" style="border:none; background:transparent; font-size:0.88rem; color:#717171; outline:none; cursor:pointer;" onchange="updateBookingPrice()">
+                  <% for(let i=1; i<=(listing.maxGuests || 4); i++) { %>
+                    <option value="<%= i %>"><%= i %> guest<%= i > 1 ? 's' : '' %></option>
+                  <% } %>
+                </select>
+              </div>
             </div>
             <i class="fa-solid fa-chevron-down"></i>
           </div>
 
+          <!-- Hidden inputs for submission -->
+          <input type="hidden" name="checkIn" id="booking-checkin" required>
+          <input type="hidden" name="checkOut" id="booking-checkout" required>
+          <input type="hidden" name="totalPrice" id="booking-totalPrice" value="<%= listing.price %>" required>
+
           <!-- Rate options -->
           <div class="rates-label">Rates</div>
-          <div class="rate-option selected" onclick="selectRate(this)">
+          <div class="rate-option selected" onclick="selectRate(this, 1)">
             <div>
-              <div class="rate-name">Non-refundable &nbsp;·&nbsp; &#8377;<%= listing.price.toLocaleString("en-IN") %> total</div>
+              <div class="rate-name">Non-refundable &nbsp;·&nbsp; <span class="display-total-price">&#8377;<%= listing.price.toLocaleString("en-IN") %> total</span></div>
               <div class="rate-desc">Free cancellation for 24 hours. After that, non-refundable.</div>
             </div>
             <div class="rate-radio"></div>
           </div>
-          <div class="rate-option" onclick="selectRate(this)">
+          <div class="rate-option" onclick="selectRate(this, 1.12)">
             <div>
-              <div class="rate-name">Refundable &nbsp;·&nbsp; &#8377;<%= Math.round(listing.price * 1.12).toLocaleString("en-IN") %> total</div>
+              <div class="rate-name">Refundable &nbsp;·&nbsp; <span class="display-total-price-refundable">&#8377;<%= Math.round(listing.price * 1.12).toLocaleString("en-IN") %> total</span></div>
               <div class="rate-desc">Free cancellation before check-in for a partial refund.</div>
             </div>
             <div class="rate-radio"></div>
           </div>
 
-          <a href="<% if(currUser){ %>#section-reviews<% } else { %>/login<% } %>" class="reserve-btn">
-            <% if(currUser){ %>Reserve<% } else { %>Log in to reserve<% } %>
-          </a>
+          <% if(currUser){ %>
+             <button type="submit" class="reserve-btn">Reserve</button>
+          <% } else { %>
+             <a href="/login" class="reserve-btn">Log in to reserve</a>
+          <% } %>
           <div class="no-charge-note">You won't be charged yet</div>
 
         </div>
+        </form>
 
         <!-- Owner edit/delete (shown only to owner) -->
         <% if(currUser && listing.owner && listing.owner._id.toString() === currUser._id.toString()){ %>
@@ -1056,9 +1087,60 @@
   }
 
   // Rate option selection
-  function selectRate(el) {
+  let currentRateMultiplier = 1;
+  function selectRate(el, multiplier) {
     document.querySelectorAll('.rate-option').forEach(r => r.classList.remove('selected'));
     el.classList.add('selected');
+    currentRateMultiplier = multiplier;
+    updateBookingPrice();
+  }
+
+  // Flatpickr & Booking Logic
+  let checkInDate = null;
+  let checkOutDate = null;
+  const basePrice = <%= listing.price %>;
+
+  function updateBookingPrice() {
+    let nights = 1;
+    if (checkInDate && checkOutDate) {
+       const diffTime = Math.abs(checkOutDate - checkInDate);
+       nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+       if (nights === 0) nights = 1;
+    }
+    
+    const totalPrice = Math.round(basePrice * nights * currentRateMultiplier);
+    
+    // Update hidden input
+    document.getElementById('booking-totalPrice').value = totalPrice;
+    
+    // Update display texts
+    document.querySelector('.display-total-price').innerHTML = `&#8377;${(basePrice * nights).toLocaleString("en-IN")} total`;
+    document.querySelector('.display-total-price-refundable').innerHTML = `&#8377;${Math.round(basePrice * nights * 1.12).toLocaleString("en-IN")} total`;
+  }
+
+  if (typeof flatpickr !== 'undefined') {
+    flatpickr("#flatpickr-date-input", {
+      mode: "range",
+      minDate: "today",
+      dateFormat: "Y-m-d",
+      onChange: function(selectedDates, dateStr, instance) {
+        if (selectedDates.length === 2) {
+          checkInDate = selectedDates[0];
+          checkOutDate = selectedDates[1];
+          
+          document.getElementById('checkin-display').innerText = checkInDate.toLocaleDateString();
+          document.getElementById('checkout-display').innerText = checkOutDate.toLocaleDateString();
+          
+          document.getElementById('booking-checkin').value = checkInDate.toISOString();
+          document.getElementById('booking-checkout').value = checkOutDate.toISOString();
+          
+          updateBookingPrice();
+        } else if (selectedDates.length === 1) {
+          document.getElementById('checkin-display').innerText = selectedDates[0].toLocaleDateString();
+          document.getElementById('checkout-display').innerText = "Add date";
+        }
+      }
+    });
   }
 
   // Anchor nav active state on scroll
@@ -1075,5 +1157,42 @@
       if (a.getAttribute('href') === '#' + current) a.classList.add('active-anchor');
     });
   });
+
+  // Wishlist AJAX Toggle
+  const wishlistBtn = document.querySelector('.wishlist-toggle-btn');
+  if (wishlistBtn) {
+      wishlistBtn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          const currUser = <%- currUser ? 'true' : 'false' %>;
+          if (!currUser) {
+              window.location.href = '/login';
+              return;
+          }
+          
+          const listingId = wishlistBtn.getAttribute('data-id');
+          try {
+              const response = await fetch(`/wishlist/${listingId}/toggle`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' }
+              });
+              const data = await response.json();
+              if (data.success) {
+                  const icon = wishlistBtn.querySelector('.wishlist-icon');
+                  const textSpan = wishlistBtn.querySelector('span');
+                  if (data.wishlisted) {
+                      icon.classList.remove('fa-regular');
+                      icon.classList.add('fa-solid', 'text-danger');
+                      textSpan.innerText = 'Saved';
+                  } else {
+                      icon.classList.remove('fa-solid', 'text-danger');
+                      icon.classList.add('fa-regular');
+                      textSpan.innerText = 'Save';
+                  }
+              }
+          } catch (error) {
+              console.error('Error toggling wishlist:', error);
+          }
+      });
+  }
 </script>
 <script src="/js/map.js"></script>

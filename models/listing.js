@@ -62,6 +62,10 @@ const listingSchema=new Schema({
     ],
     required: true,
   },
+  maxGuests: {
+      type: Number,
+      default: 4,
+  }
 })
 
 listingSchema.post("findOneAndDelete",async(listing)=>{

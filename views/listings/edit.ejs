@@ -55,15 +55,22 @@
          class="form-control">
          <div class="form-text text-muted">You can upload more images (Max 5 total per listing).</div>
     </div>
-    <div class="mb-3">
-        <label for="price" class= "form-label">Price</label>
-        <input name="listing[price]" value="<%=listing.price%>" type="number" class="form-control" required>
-        <div class="invalid-feedback">Price should be valid</div>
-    </div>
-    <div class="mb-3">
-        <label for="country" class= "form-label">Country</label>
-        <input name="listing[country]"value="<%=listing.country%>" type="text" class="form-control" required>
-        <div class="invalid-feedback">Country name should be valid</div>
+    <div class="row">
+        <div class="mb-3 col-4">
+            <label for="price" class= "form-label">Price</label>
+            <input name="listing[price]" value="<%=listing.price%>" type="number" class="form-control" required>
+            <div class="invalid-feedback">Price should be valid</div>
+        </div>
+        <div class="mb-3 col-4">
+            <label for="maxGuests" class="form-label">Max Guests</label>
+            <input name="listing[maxGuests]" value="<%=listing.maxGuests || 4%>" type="number" min="1" class="form-control" required>
+            <div class="invalid-feedback">Please enter a valid guest capacity</div>
+        </div>
+        <div class="mb-3 col-4">
+            <label for="country" class= "form-label">Country</label>
+            <input name="listing[country]" value="<%=listing.country%>" type="text" class="form-control" required>
+            <div class="invalid-feedback">Country name should be valid</div>
+        </div>
     </div>
     <div class="mb-3">
         <label for="location" class= "form-label">Location</label>

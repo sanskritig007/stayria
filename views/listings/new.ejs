@@ -31,7 +31,12 @@
              <input name="listing[price]" placeholder="1200" class="form-control" required>
              <div class="invalid-feedback">Price should be valid</div>
            </div>
-           <div class="mb-3 col-8">
+           <div class="mb-3 col-4">
+             <label for="maxGuests" class="form-label">Max Guests</label>
+             <input name="listing[maxGuests]" type="number" min="1" placeholder="4" class="form-control" required>
+             <div class="invalid-feedback">Please enter a valid guest capacity</div>
+           </div>
+           <div class="mb-3 col-4">
                <label for="country" class="form-label">Country</label>
                <input name="listing[country]" placeholder="India" type="text" class="form-control" required>
                <div class="invalid-feedback">Country should be valid</div>

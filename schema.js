@@ -21,6 +21,8 @@ module.exports.listingSchema = Joi.object({
         "arctic"
       )
       .required(),
+      
+    maxGuests: Joi.number().min(1).required(),
 
     image: Joi.string().allow("", null),
   }).required(),

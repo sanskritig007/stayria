@@ -18,39 +18,74 @@ body{
 .nav-link{
     color: #222222 !important;
 }
-.f-info-links a{
-    text-decoration: none !important;
-    color: #222222 !important;
+/* Custom Footer Styles */
+.custom-footer {
+    background-color: #F7F7F7;
+    border-top: 1px solid #DDDDDD;
+    padding: 3rem 0;
+    margin-top: 4rem;
+    font-size: 0.9rem;
 }
-.f-info-links a:hover{
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+.footer-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+.footer-col h6 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #222222;
+}
+.footer-col a, .footer-bottom a {
+    color: #222222;
+    text-decoration: none;
+}
+.footer-col a:hover, .footer-bottom a:hover {
     text-decoration: underline;
 }
-.f-info-links,
-.f-info-socials,
-.f-info-brand{
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.footer-bottom {
+    border-top: 1px solid #DDDDDD;
+    padding-top: 1.5rem;
+    color: #222222;
 }
-/* .f-info-socials{
-    width: 100%;
+.footer-bottom-left {
     display: flex;
     align-items: center;
-    justify-content: center;
-} */
-.f-info-socials i{
-    margin-right: 1rem;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+.footer-bottom-left .dot {
+    margin: 0 0.2rem;
+}
+.footer-lang-currency span {
+    cursor: pointer;
+}
+.footer-lang-currency span:hover {
+    text-decoration: underline;
+}
+.footer-socials a {
     font-size: 1.2rem;
 }
-.f-info{
-    text-align: center;
-    height: 8rem;
-    background-color: #ebebeb;
-    display: flex;
-    flex-wrap:wrap ;
-    justify-content: center;
-    align-items:space-evenly;
+@media (max-width: 768px) {
+    .footer-grid {
+        grid-template-columns: 1fr;
+    }
+    .footer-bottom {
+        flex-direction: column-reverse;
+        align-items: flex-start !important;
+        gap: 1rem;
+    }
 }
 .listing-card{
     border: none !important;

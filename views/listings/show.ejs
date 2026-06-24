@@ -886,10 +886,14 @@
         <form action="/bookings/listings/<%= listing._id %>/bookings" method="POST" id="booking-form">
         <div class="booking-card">
 
-          <!-- Price includes badge -->
-          <div class="price-includes-badge">
-            <i class="fa-solid fa-tag"></i>
-            Prices include all fees
+          <!-- Tax Toggle (Replaces static badge) -->
+          <div class="tax-toggle shadow-sm" style="border: 1px solid #ddd; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; align-items: center; justify-content: space-between; gap: 10px; background: white; margin-bottom: 1.5rem;">
+            <div class="form-check-reverse form-switch m-0 p-0 d-flex align-items-center gap-2 w-100 justify-content-between">
+              <label class="form-check-label fw-bold m-0" for="bookingTaxToggle" style="cursor: pointer; font-size: 0.95rem;">
+                <i class="fa-solid fa-tag text-danger me-2"></i>Prices include all taxes
+              </label>
+              <input class="form-check-input m-0" type="checkbox" role="switch" id="bookingTaxToggle" style="cursor: pointer;" onchange="updateBookingPrice()">
+            </div>
           </div>
 
           <!-- Price -->
@@ -1108,14 +1112,19 @@
        if (nights === 0) nights = 1;
     }
     
-    const totalPrice = Math.round(basePrice * nights * currentRateMultiplier);
+    const taxToggle = document.getElementById('bookingTaxToggle');
+    const taxMultiplier = (taxToggle && taxToggle.checked) ? 1.18 : 1;
+    const currentBaseWithTax = basePrice * taxMultiplier;
+
+    const totalPrice = Math.round(currentBaseWithTax * nights * currentRateMultiplier);
     
     // Update hidden input
     document.getElementById('booking-totalPrice').value = totalPrice;
     
     // Update display texts
-    document.querySelector('.display-total-price').innerHTML = `&#8377;${(basePrice * nights).toLocaleString("en-IN")} total`;
-    document.querySelector('.display-total-price-refundable').innerHTML = `&#8377;${Math.round(basePrice * nights * 1.12).toLocaleString("en-IN")} total`;
+    document.querySelector('.display-total-price').innerHTML = `&#8377;${Math.round(currentBaseWithTax * nights).toLocaleString("en-IN")} total`;
+    document.querySelector('.display-total-price-refundable').innerHTML = `&#8377;${Math.round(currentBaseWithTax * nights * 1.12).toLocaleString("en-IN")} total`;
+    document.getElementById('display-price-night').innerHTML = `&#8377;${Math.round(currentBaseWithTax).toLocaleString("en-IN")}`;
   }
 
   if (typeof flatpickr !== 'undefined') {

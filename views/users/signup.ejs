@@ -1,24 +1,173 @@
 <%layout("/layouts/boilerplate")%>
 
-<div class="row mt-3">
-   <h1 class="col-6 offset-3">SignUp on Stayria</h1> 
-    <div class="col-6 offset-3">
+<style>
+    /* Full viewport background that sits behind everything */
+    .auth-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-image: url('/images/auth-bg.jpg'); 
+        background-size: cover;
+        background-position: center;
+        z-index: -2;
+    }
+    
+    /* Remove dark overlay to match the brighter Airbnb look */
+    .auth-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(255, 255, 255, 0.1);
+        z-index: -1;
+    }
+
+    /* Exact Airbnb Modal Styling */
+    .auth-modal {
+        background-color: #ffffff;
+        border-radius: 20px;
+        padding: 32px;
+        box-shadow: 0 8px 28px rgba(0,0,0,0.28);
+        max-width: 480px;
+        width: 100%;
+        margin: 60px auto;
+        position: relative;
+        z-index: 10;
+    }
+
+    /* Custom Input styling to match */
+    .airbnb-input {
+        border: 1px solid #b0b0b0;
+        border-radius: 8px;
+        padding: 14px 12px;
+        font-size: 16px;
+        color: #222222;
+        margin-bottom: 12px;
+        transition: border-color 0.2s;
+    }
+    .airbnb-input:focus {
+        border-color: #222222;
+        border-width: 2px;
+        padding: 13px 11px; /* compensate for border width */
+        outline: none;
+        box-shadow: none;
+    }
+    
+    .airbnb-input-top {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        margin-bottom: 0;
+    }
+    .airbnb-input-middle {
+        border-radius: 0;
+        border-top: none;
+        margin-bottom: 0;
+    }
+    .airbnb-input-middle:focus {
+        border-top: 2px solid #222222;
+    }
+    .airbnb-input-bottom {
+        border-top: none;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        margin-bottom: 16px;
+    }
+    .airbnb-input-bottom:focus {
+        border-top: 2px solid #222222;
+    }
+
+    .airbnb-btn-primary {
+        background: linear-gradient(to right, #E61E4D 0%, #E31C5F 50%, #D70466 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+        font-size: 16px;
+        padding: 14px;
+        border-radius: 8px;
+        width: 100%;
+        transition: opacity 0.2s;
+    }
+    .airbnb-btn-primary:hover {
+        opacity: 0.9;
+        color: white;
+    }
+
+    .divider-text {
+        font-size: 12px;
+        color: #717171;
+    }
+
+    .social-btn {
+        border: 1px solid #b0b0b0;
+        border-radius: 8px;
+        background: white;
+        padding: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 48%;
+        transition: border-color 0.2s, background-color 0.2s;
+        cursor: pointer;
+    }
+    .social-btn:hover {
+        border-color: #222222;
+        background-color: #f7f7f7;
+    }
+    .social-btn img {
+        height: 20px;
+    }
+
+    /* Ensure parent elements allow z-index layering */
+    .container {
+        position: relative;
+        z-index: 1;
+    }
+</style>
+
+<!-- Background elements -->
+<div class="auth-bg"></div>
+<div class="auth-overlay"></div>
+
+<!-- Modal Form -->
+<div class="d-flex align-items-center justify-content-center">
+    <div class="auth-modal">
+        <!-- Logo -->
+        <div class="text-center mb-3">
+            <i class="fa-solid fa-compass" style="color: #fe424d; font-size: 40px;"></i>
+        </div>
+        
+        <!-- Title -->
+        <h4 class="text-center fw-bold mb-4" style="color: #222222;">Sign up</h4>
+        
         <form action="/signup" method="POST" class="needs-validation" novalidate>
-            <div class="mb-3">
-             <label for="username" class= "form-label">Username</label>
-             <input name="username" id="username" type="text" class="form-control" required>
-             <div class="valid-feedback">Looks good!!</div>
+            <!-- Inputs stacked together like Airbnb -->
+            <div>
+                <input name="username" id="username" type="text" class="form-control airbnb-input airbnb-input-top" placeholder="Username" required>
+                <input name="email" id="email" type="email" class="form-control airbnb-input airbnb-input-middle" placeholder="Email" required>
+                <input name="password" id="password" type="password" class="form-control airbnb-input airbnb-input-bottom" placeholder="Password" required>
             </div>
-            <div class="mb-3">
-             <label for="email" class= "form-label">Email</label>
-             <input name="email" id="email" type="email" class="form-control" required>
-            </div>
-            <div class="mb-3">
-             <label for="password" class= "form-label">Password</label>
-             <input name="password" id="password" type="password" class="form-control" required>
-             <div class="valid-feedback">Strong enough!!</div>
-            </div>
-            <button class="btn btn-success">SignUp</button>
+            
+            <button class="airbnb-btn-primary mb-4">Continue</button>
         </form>
+
+        <!-- Divider -->
+        <div class="d-flex align-items-center mb-4">
+            <hr class="flex-grow-1" style="border-color: #dddddd; opacity: 1;">
+            <span class="mx-3 divider-text">or</span>
+            <hr class="flex-grow-1" style="border-color: #dddddd; opacity: 1;">
+        </div>
+
+        <!-- Social Buttons -->
+        <div class="d-flex justify-content-between">
+            <div class="social-btn">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google">
+            </div>
+            <div class="social-btn">
+                <i class="fa-brands fa-apple" style="font-size: 22px; color: black;"></i>
+            </div>
+        </div>
     </div>
 </div>

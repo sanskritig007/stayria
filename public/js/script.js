@@ -14,5 +14,15 @@
 
       form.classList.add('was-validated')
     }, false)
-  })
+  });
+
+  // Auto-dismiss custom flash alerts after 5 seconds
+  setTimeout(() => {
+    const flashAlerts = document.querySelectorAll('.custom-flash-alert');
+    flashAlerts.forEach(alert => {
+      // Use Bootstrap's alert instance to close it with animation
+      const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+      bsAlert.close();
+    });
+  }, 5000);
 })()

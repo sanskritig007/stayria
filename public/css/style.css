@@ -908,3 +908,51 @@ body{
 .review-card .btn {
   margin-top: 0.5rem;
 }
+
+/* Professional Floating Flash Alerts */
+.custom-flash-alert {
+  position: fixed;
+  top: 90px; /* Just below the navbar */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1050;
+  background-color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  padding: 16px 24px;
+  padding-right: 50px; /* Space for close button */
+  min-width: 320px;
+  display: flex;
+  align-items: center;
+  animation: slideDownFadeIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.custom-flash-alert .btn-close {
+  top: 50%;
+  transform: translateY(-50%);
+  right: 12px;
+  padding: 0.5rem;
+  font-size: 0.8rem;
+  opacity: 0.5;
+}
+
+.custom-flash-alert .btn-close:hover {
+  opacity: 1;
+}
+
+.flash-msg {
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
+}
+
+@keyframes slideDownFadeIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}

@@ -69,7 +69,39 @@ module.exports.index = async (req, res) => {
             .populate("user")
             .sort({ createdAt: -1 });
 
-        res.render("bookings/index.ejs", { myTrips, reservations });
+        // Calculate analytics
+        let totalEarnings = 0;
+        let pendingPayouts = 0;
+        let totalGuests = 0;
+        
+        const now = new Date();
+        const upcomingReservations = [];
+        const pastReservations = [];
+
+        reservations.forEach(booking => {
+            if (booking.status !== "cancelled") {
+                totalGuests += booking.guests;
+                if (new Date(booking.checkIn) >= now) {
+                    pendingPayouts += booking.totalPrice;
+                    upcomingReservations.push(booking);
+                } else {
+                    totalEarnings += booking.totalPrice;
+                    pastReservations.push(booking);
+                }
+            } else {
+                // Cancelled bookings go to past reservations for record keeping
+                pastReservations.push(booking);
+            }
+        });
+
+        res.render("bookings/index.ejs", { 
+            myTrips, 
+            upcomingReservations, 
+            pastReservations,
+            totalEarnings,
+            pendingPayouts,
+            totalGuests
+        });
     } catch (e) {
         req.flash("error", e.message);
         res.redirect("/listings");

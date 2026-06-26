@@ -1,6 +1,26 @@
 const Booking = require("../models/booking.js");
 const Listing = require("../models/listing.js");
 
+module.exports.renderPaymentPage = async (req, res) => {
+    const { id } = req.params; // listing id
+    const { checkIn, checkOut, guests, totalPrice } = req.body;
+    const listing = await Listing.findById(id);
+    
+    if (!listing) {
+        req.flash("error", "Listing not found!");
+        return res.redirect("/listings");
+    }
+
+    // Render the payment mockup page, passing along the form data
+    res.render("bookings/payment.ejs", { 
+        listing, 
+        checkIn, 
+        checkOut, 
+        guests, 
+        totalPrice 
+    });
+};
+
 module.exports.createBooking = async (req, res) => {
     try {
         const { id } = req.params; // listing id

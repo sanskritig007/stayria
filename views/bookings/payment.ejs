@@ -1,0 +1,231 @@
+<%layout("/layouts/boilerplate")%>
+
+<style>
+    body { background-color: #f7f7f9; }
+    .payment-container {
+        max-width: 900px;
+        margin: 40px auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        align-items: flex-start;
+    }
+    
+    @media (max-width: 768px) {
+        .payment-container { grid-template-columns: 1fr; flex-direction: column-reverse; }
+    }
+
+    .payment-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 32px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        position: relative;
+    }
+
+    .order-summary {
+        background: transparent;
+    }
+
+    .summary-img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 20px;
+    }
+
+    .summary-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: #222;
+    }
+
+    .summary-detail {
+        font-size: 0.95rem;
+        color: #717171;
+        margin-bottom: 4px;
+    }
+
+    .divider {
+        border-top: 1px solid #ddd;
+        margin: 20px 0;
+    }
+
+    .price-total {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #222;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    /* Mock Credit Card Form */
+    .form-group label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #222;
+        margin-bottom: 6px;
+    }
+
+    .mock-input {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        font-size: 1rem;
+        background: #fafafa;
+    }
+
+    .mock-input:focus {
+        outline: none;
+        border-color: #222;
+        background: #fff;
+    }
+
+    .pay-btn {
+        background: #000;
+        color: #fff;
+        border: none;
+        width: 100%;
+        padding: 16px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: transform 0.1s, opacity 0.2s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .pay-btn:hover { opacity: 0.9; }
+    .pay-btn:active { transform: scale(0.98); }
+
+    /* Processing Overlay */
+    .processing-overlay {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 12px;
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 10;
+    }
+
+    .spinner {
+        width: 40px; height: 40px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #000;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 16px;
+    }
+
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+</style>
+
+<div class="container">
+    <div class="payment-container">
+        
+        <!-- Left: Order Summary -->
+        <div class="order-summary">
+            <h2 class="mb-4 fw-bold" style="font-size: 1.8rem;">Checkout securely</h2>
+            
+            <% 
+              let imgUrl = listing.image?.url;
+              if (!imgUrl && listing.images && listing.images.length > 0) imgUrl = listing.images[0].url;
+            %>
+            <img src="<%= imgUrl %>" class="summary-img" alt="Listing Image">
+            
+            <div class="summary-title"><%= listing.title %></div>
+            <div class="summary-detail"><i class="fa-solid fa-location-dot me-2"></i><%= listing.location %>, <%= listing.country %></div>
+            <div class="summary-detail mt-2"><i class="fa-regular fa-calendar me-2"></i><%= new Date(checkIn).toLocaleDateString('en-IN', {day: 'numeric', month: 'short', year: 'numeric'}) %> &nbsp;to&nbsp; <%= new Date(checkOut).toLocaleDateString('en-IN', {day: 'numeric', month: 'short', year: 'numeric'}) %></div>
+            <div class="summary-detail"><i class="fa-solid fa-user-group me-2"></i><%= guests %> guest<%= guests > 1 ? 's' : '' %></div>
+            
+            <div class="divider"></div>
+            
+            <div class="price-total">
+                <span>Total to pay</span>
+                <span>&#8377;<%= Number(totalPrice).toLocaleString("en-IN") %></span>
+            </div>
+            <div class="summary-detail mt-2" style="font-size: 0.8rem;">Includes all applicable taxes and fees.</div>
+        </div>
+
+        <!-- Right: Payment Form Mockup -->
+        <div class="payment-card shadow-lg">
+            
+            <div class="processing-overlay" id="processing-overlay">
+                <div class="spinner"></div>
+                <h4 class="fw-bold">Processing Payment...</h4>
+                <p class="text-muted" style="font-size: 0.9rem;">Please do not refresh the page</p>
+            </div>
+
+            <h4 class="fw-bold mb-4">Payment Details</h4>
+            
+            <div class="d-flex align-items-center gap-2 mb-4">
+                <i class="fa-brands fa-cc-visa" style="font-size: 2rem; color: #1434CB;"></i>
+                <i class="fa-brands fa-cc-mastercard" style="font-size: 2rem; color: #EB001B;"></i>
+                <i class="fa-brands fa-cc-amex" style="font-size: 2rem; color: #006FCF;"></i>
+            </div>
+
+            <div class="form-group">
+                <label>Card Number</label>
+                <input type="text" class="mock-input" placeholder="0000 0000 0000 0000" maxlength="19" oninput="this.value = this.value.replace(/[^0-9 ]/g, '')" value="4242 4242 4242 4242">
+            </div>
+
+            <div class="d-flex gap-3">
+                <div class="form-group w-50">
+                    <label>Expiration</label>
+                    <input type="text" class="mock-input" placeholder="MM/YY" value="12/26">
+                </div>
+                <div class="form-group w-50">
+                    <label>CVC</label>
+                    <input type="password" class="mock-input" placeholder="123" maxlength="3" value="123">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Cardholder Name</label>
+                <input type="text" class="mock-input" placeholder="Name on card" value="<%= currUser.username %>">
+            </div>
+
+            <button class="pay-btn mt-2" onclick="simulatePayment()">
+                <i class="fa-solid fa-lock"></i> Pay &#8377;<%= Number(totalPrice).toLocaleString("en-IN") %>
+            </button>
+            <p class="text-center text-muted mt-3 mb-0" style="font-size: 0.75rem;">
+                Your payment is secure and encrypted.
+            </p>
+
+            <!-- HIDDEN FORM TO ACTUALLY CREATE THE BOOKING -->
+            <form id="real-booking-form" action="/bookings/listings/<%= listing._id %>/bookings" method="POST" style="display: none;">
+                <input type="hidden" name="checkIn" value="<%= checkIn %>">
+                <input type="hidden" name="checkOut" value="<%= checkOut %>">
+                <input type="hidden" name="guests" value="<%= guests %>">
+                <input type="hidden" name="totalPrice" value="<%= totalPrice %>">
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function simulatePayment() {
+    // Show the processing overlay
+    document.getElementById('processing-overlay').style.display = 'flex';
+    
+    // Disable the button
+    const btn = document.querySelector('.pay-btn');
+    btn.style.opacity = '0.5';
+    btn.disabled = true;
+
+    // Simulate network delay of 3 seconds, then submit the real form
+    setTimeout(() => {
+        document.getElementById('real-booking-form').submit();
+    }, 2500);
+}
+</script>

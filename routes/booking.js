@@ -7,6 +7,9 @@ const bookingController = require("../controllers/booking.js");
 // View bookings dashboard
 router.get("/", isLoggedIn, wrapAsync(bookingController.index));
 
+// Mockup payment processing page
+router.post("/listings/:id/payment", isLoggedIn, wrapAsync(bookingController.renderPaymentPage));
+
 // Create a booking
 router.post("/listings/:id/bookings", isLoggedIn, wrapAsync(bookingController.createBooking));
 

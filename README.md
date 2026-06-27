@@ -9,14 +9,18 @@ Stayria is an Airbnb-inspired full-stack web application for discovering, creati
 
 ## Features
 
-- Browse all stays with category filters and search
-- Create, edit, and delete listings as an authenticated host
-- Upload listing images with Cloudinary
-- View listing details with photos, host info, amenities, reviews, and map location
-- Add and delete reviews with ratings
-- User signup, login, logout, sessions, and flash messages
-- Authorization checks so only owners can edit/delete their listings
-- MongoDB-backed sessions for production-ready login persistence
+- **Beautiful Modern UI**: Airbnb-inspired property pages with interactive image galleries, sticky booking cards, and professional alerts.
+- **Booking & Mock Payment System**: Seamless checkout flow with dynamic price calculations (taxes, fees, guests), a professional Stripe-like mockup UI, and WhatsApp booking confirmations.
+- **Host Analytics Dashboard**: Hosts can track Total Earnings, Pending Payouts, Total Guests, and view reservations split neatly into Upcoming and Past guests.
+- **Wishlist**: Users can save their favorite properties.
+- Browse all stays with category filters and intelligent search.
+- Create, edit, and delete listings as an authenticated host.
+- Upload listing images with Cloudinary.
+- View listing details with photos, host info, amenities, reviews, and interactive Mapbox locations.
+- Add and delete reviews with star ratings.
+- User signup, login, logout, sessions, and professional toast notifications.
+- Authorization checks so only owners can edit/delete their listings.
+- MongoDB-backed sessions for production-ready login persistence.
 
 ## Tech Stack
 
@@ -92,6 +96,10 @@ If the deployment platform does not auto-deploy, trigger a manual deploy from th
 - `GET /signup` - signup page
 - `GET /login` - login page
 - `GET /logout` - logout
+- `POST /wishlist/:id/toggle` - toggle saved stays
+- `GET /bookings` - My Trips & Host Dashboard
+- `POST /bookings/listings/:id/payment` - mockup checkout page
+- `POST /bookings/listings/:id/bookings` - create booking
 
 ## Project Structure
 
@@ -106,12 +114,10 @@ utils/         Error and async helpers
 
 ## Future Improvements
 
-- Wishlist / saved stays
-- Booking system with check-in, checkout, and guests
+- Google OAuth Authentication integration
+- Real payment gateway integration (Stripe / Razorpay)
 - Search by available dates and guest count
-- Host dashboard
-- Image gallery improvements
-- Payment integration
+- Real-time chat between host and guest
 
 ## Status
 

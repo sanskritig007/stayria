@@ -22,6 +22,7 @@
       .delete-img-cb:checked ~ img { opacity: 0.4; filter: grayscale(100%); }
       .delete-overlay-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fe424d; font-weight: bold; font-size: 13px; display: none; pointer-events: none; background: rgba(255,255,255,0.8); padding: 4px 8px; border-radius: 4px; z-index: 3; }
       .delete-img-cb:checked ~ .delete-overlay-text { display: block; }
+      .new-img-tag { position: absolute; bottom: 5px; left: 5px; background: rgba(0, 0, 0, 0.65); color: #fff; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; z-index: 2; }
     </style>
     <div class="mb-3">
         <label class="form-label">Manage Existing Images</label>
@@ -46,14 +47,21 @@
         </div>
     </div>
     <div class="mb-3">
-        <label for="image" class= "form-label">Upload Additional Images</label>
+        <label for="additional-images" class= "form-label">Upload Additional Images</label>
         <input 
+         id="additional-images"
          name="listing[images]" 
          type="file" 
          multiple
          accept="image/png, image/jpeg, image/jpg"
          class="form-control">
          <div class="form-text text-muted">You can upload more images (Max 5 total per listing).</div>
+
+         <!-- Staged new images preview container -->
+         <div id="new-images-preview-section" class="mt-3" style="display: none;">
+             <label class="form-label text-muted small fw-bold">New Images to be Added:</label>
+             <div id="new-images-preview-grid" class="edit-image-grid"></div>
+         </div>
     </div>
     <div class="row">
         <div class="mb-3 col-4">
@@ -87,3 +95,82 @@
     <br></br> 
     <button class="btn btn-dark edit-btn">Edit</button>
 </form>
+
+<script>
+  const imageInput = document.getElementById("additional-images");
+  const previewSection = document.getElementById("new-images-preview-section");
+  const previewGrid = document.getElementById("new-images-preview-grid");
+  const form = imageInput ? imageInput.closest("form") : null;
+
+  let stagedFiles = [];
+
+  if (imageInput) {
+    imageInput.addEventListener("change", function(e) {
+      const selectedFiles = Array.from(e.target.files);
+      if (!selectedFiles.length) return;
+
+      selectedFiles.forEach(file => {
+        if (file.type.startsWith("image/")) {
+          stagedFiles.push(file);
+        }
+      });
+
+      // Clear input so next time user clicks "Choose file", it is fresh
+      imageInput.value = "";
+
+      renderPreviews();
+    });
+  }
+
+  function renderPreviews() {
+    previewGrid.innerHTML = "";
+    if (stagedFiles.length === 0) {
+      previewSection.style.display = "none";
+      return;
+    }
+
+    previewSection.style.display = "block";
+
+    stagedFiles.forEach((file, index) => {
+      const wrapper = document.createElement("div");
+      wrapper.className = "edit-image-wrapper";
+
+      const removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.className = "delete-img-btn";
+      removeBtn.title = "Remove this photo";
+      removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+      removeBtn.style.border = "none";
+
+      removeBtn.addEventListener("click", function() {
+        stagedFiles.splice(index, 1);
+        renderPreviews();
+      });
+
+      const img = document.createElement("img");
+      img.src = URL.createObjectURL(file);
+      img.alt = file.name;
+
+      const tag = document.createElement("span");
+      tag.className = "new-img-tag";
+      tag.textContent = "New";
+
+      wrapper.appendChild(removeBtn);
+      wrapper.appendChild(img);
+      wrapper.appendChild(tag);
+      previewGrid.appendChild(wrapper);
+    });
+  }
+
+  if (form) {
+    form.addEventListener("submit", function(e) {
+      if (stagedFiles.length > 0) {
+        const dataTransfer = new DataTransfer();
+        stagedFiles.forEach(file => {
+          dataTransfer.items.add(file);
+        });
+        imageInput.files = dataTransfer.files;
+      }
+    });
+  }
+</script>

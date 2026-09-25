@@ -11,19 +11,6 @@
         <textarea name="listing[description]" class="form-control" required><%=listing.description%></textarea>
         <div class="invalid-feedback">Please enter a short description</div>
     </div>
-    <style>
-      .edit-image-grid { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 15px; }
-      .edit-image-wrapper { position: relative; width: 150px; height: 120px; border-radius: 8px; overflow: hidden; border: 1px solid #ddd; }
-      .edit-image-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.2s; }
-      .delete-img-cb { display: none; }
-      .delete-img-btn { position: absolute; top: 5px; right: 5px; background: rgba(255, 255, 255, 0.9); color: #fe424d; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: all 0.2s; z-index: 2; }
-      .delete-img-btn:hover { background: #fe424d; color: white; }
-      .delete-img-cb:checked + .delete-img-btn { background: #fe424d; color: white; transform: scale(1.1); }
-      .delete-img-cb:checked ~ img { opacity: 0.4; filter: grayscale(100%); }
-      .delete-overlay-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fe424d; font-weight: bold; font-size: 13px; display: none; pointer-events: none; background: rgba(255,255,255,0.8); padding: 4px 8px; border-radius: 4px; z-index: 3; }
-      .delete-img-cb:checked ~ .delete-overlay-text { display: block; }
-      .new-img-tag { position: absolute; bottom: 5px; left: 5px; background: rgba(0, 0, 0, 0.65); color: #fff; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; z-index: 2; }
-    </style>
     <div class="mb-3">
         <label class="form-label">Manage Existing Images</label>
         <div class="edit-image-grid">
@@ -85,13 +72,20 @@
         <input name="listing[location]" value="<%=listing.location%>" type="text" class="form-control" required>
         <div class="invalid-feedback">Location should be valid</div>
     </div>
-    <select name="listing[category]" class="form-control">
-      <option value="trending" <%= listing.category === "trending" ? "selected" : "" %>>Trending</option>
-      <option value="rooms" <%= listing.category === "rooms" ? "selected" : "" %>>Rooms</option>
-      <option value="iconic" <%= listing.category === "iconic" ? "selected" : "" %>>Iconic Cities</option>
-      <option value="mountains" <%= listing.category === "mountains" ? "selected" : "" %>>Mountains</option>
-      <option value="castles" <%= listing.category === "castles" ? "selected" : "" %>>Castles</option>
-    </select>
+    <div class="mb-3">
+      <label class="form-label">Category</label>
+      <select name="listing[category]" class="form-control" required>
+        <option value="trending" <%= listing.category === "trending" ? "selected" : "" %>>Trending</option>
+        <option value="rooms" <%= listing.category === "rooms" ? "selected" : "" %>>Rooms</option>
+        <option value="iconic" <%= listing.category === "iconic" ? "selected" : "" %>>Iconic Cities</option>
+        <option value="mountains" <%= listing.category === "mountains" ? "selected" : "" %>>Mountains</option>
+        <option value="castles" <%= listing.category === "castles" ? "selected" : "" %>>Castles</option>
+        <option value="pools" <%= listing.category === "pools" ? "selected" : "" %>>Amazing Pools</option>
+        <option value="camping" <%= listing.category === "camping" ? "selected" : "" %>>Camping</option>
+        <option value="farms" <%= listing.category === "farms" ? "selected" : "" %>>Farms</option>
+        <option value="arctic" <%= listing.category === "arctic" ? "selected" : "" %>>Arctic</option>
+      </select>
+    </div>
     <br></br> 
     <button class="btn btn-dark edit-btn">Edit</button>
 </form>

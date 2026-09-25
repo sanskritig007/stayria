@@ -172,6 +172,9 @@ module.exports.updateListing=async (req, res) => {
     listing.title = fields.title ?? listing.title;
     listing.description = fields.description ?? listing.description;
     listing.price = fields.price ?? listing.price;
+    if (fields.maxGuests) {
+        listing.maxGuests = Number(fields.maxGuests);
+    }
     listing.location = location;
     listing.country = country;
     listing.category = fields.category ?? listing.category;

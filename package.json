@@ -2,16 +2,24 @@
   "engines":{
     "node":"22.18.0"
   },
-  "name": "majorproject",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "stayria",
+  "version": "1.0.1",
+  "description": "A full-stack property booking platform engineered with Node.js, Express, MongoDB, Mapbox, and Cloudinary.",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "stayria",
+    "nodejs",
+    "express",
+    "mongodb",
+    "airbnb-clone",
+    "cloudinary",
+    "mapbox"
+  ],
+  "author": "Sanskriti Goswami",
   "license": "ISC",
   "dependencies": {
     "@mapbox/mapbox-sdk": "^0.16.2",

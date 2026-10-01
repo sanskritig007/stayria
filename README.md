@@ -117,3 +117,5 @@ The server will start on `http://localhost:8080`. Navigate to `/listings` to vie
 
 ---
 *This project is under active development.*
+
+<!-- Updated for project synchronization & maintenance -->

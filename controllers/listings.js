@@ -79,7 +79,7 @@ module.exports.index = async (req, res) => {
     query.maxGuests = { $gte: Number(guests) };
   }
 
-  let allListings = await Listing.find(query);
+  let allListings = await Listing.find(query).populate("reviews");
 
   if (checkIn && checkOut) {
     const Booking = require("../models/booking.js");
@@ -100,7 +100,7 @@ module.exports.index = async (req, res) => {
     allListings = allListings.filter(listing => !bookedListingIds.includes(listing._id.toString()));
   }
 
-  res.render("listings/index", { allListings, searchPrompt: q || "" });
+  res.render("listings/index", { allListings, searchPrompt: q || "", currentCategory: category || "" });
 };
   
 module.exports.showListing = async(req,res)=>{

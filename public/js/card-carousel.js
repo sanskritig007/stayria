@@ -1,6 +1,6 @@
 /**
- * STAYRIA - CARD CAROUSEL & FILTER BAR CONTROLLER
- * Modular script for handling in-card image carousels and smooth horizontal category scrolling.
+ * STAYRIA - CARD CAROUSEL & MULTI-ROW CONTROLLER
+ * Handles in-card image sliding, category filter bar, and destination row horizontal scrolling.
  */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -91,10 +91,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const swipeDistance = touchStartX - touchEndX;
       if (Math.abs(swipeDistance) > 40) {
         if (swipeDistance > 0) {
-          // Swiped Left -> Next Image
           goToSlide(currentIndex + 1);
         } else {
-          // Swiped Right -> Prev Image
           goToSlide(currentIndex - 1);
         }
       }
@@ -135,7 +133,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // Scroll amount per click (approx 2-3 items)
     const scrollAmount = 260;
 
     filterPrevBtn.addEventListener("click", (e) => {
@@ -151,7 +148,25 @@ document.addEventListener("DOMContentLoaded", () => {
     filterScrollContainer.addEventListener("scroll", updateScrollButtonsVisibility);
     window.addEventListener("resize", updateScrollButtonsVisibility);
 
-    // Initial check
     setTimeout(updateScrollButtonsVisibility, 100);
   }
+
+  // ─────────────────────────────────────────────────────────────
+  // 3. DESTINATION MULTI-ROW TRACK SCROLL CONTROLS
+  // ─────────────────────────────────────────────────────────────
+  document.querySelectorAll(".row-nav-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const targetId = btn.getAttribute("data-target");
+      const track = document.getElementById(targetId);
+      if (!track) return;
+
+      const scrollAmount = 600; // Scroll 2 cards at a time
+      if (btn.classList.contains("prev-row-btn")) {
+        track.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+      } else {
+        track.scrollBy({ left: scrollAmount, behavior: "smooth" });
+      }
+    });
+  });
 });

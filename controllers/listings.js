@@ -100,7 +100,74 @@ module.exports.index = async (req, res) => {
     allListings = allListings.filter(listing => !bookedListingIds.includes(listing._id.toString()));
   }
 
-  res.render("listings/index", { allListings, searchPrompt: q || "", currentCategory: category || "" });
+  // Create curated destination sections for the homepage (Airbnb style)
+  let groupedSections = [];
+  const isSearchOrFilter = Boolean(category || q || guests || (checkIn && checkOut));
+
+  if (!isSearchOrFilter && allListings.length > 0) {
+    const beachStays = allListings.filter(l => 
+      ["Malibu", "Bali", "Cancun", "Costa Rica", "Mykonos", "Maldives", "Phuket", "Fiji", "goa", "Beach"].some(loc => 
+        (l.location && l.location.toLowerCase().includes(loc.toLowerCase())) || 
+        (l.title && l.title.toLowerCase().includes(loc.toLowerCase()))
+      )
+    );
+
+    const mountainStays = allListings.filter(l => 
+      ["Aspen", "Banff", "Lake Tahoe", "Verbier", "Montana", "New Hampshire", "mountains"].some(loc => 
+        (l.location && l.location.toLowerCase().includes(loc.toLowerCase())) || 
+        (l.category === "mountains")
+      )
+    );
+
+    const historicStays = allListings.filter(l => 
+      ["Amsterdam", "Charleston", "Florence", "Cotswolds", "Scottish Highlands", "Boston", "Tokyo", "castles", "iconic"].some(loc => 
+        (l.location && l.location.toLowerCase().includes(loc.toLowerCase())) || 
+        (l.category === "castles" || l.category === "iconic")
+      )
+    );
+
+    // 1. Trending
+    groupedSections.push({
+      title: "Trending Stays Worldwide",
+      queryParam: "category=trending",
+      listings: allListings.slice(0, 8)
+    });
+
+    // 2. Beach & Coastal
+    if (beachStays.length > 0) {
+      groupedSections.push({
+        title: "Popular Beach & Coastal Getaways",
+        queryParam: "category=pools",
+        listings: beachStays
+      });
+    }
+
+    // 3. Mountain Cabins
+    if (mountainStays.length > 0) {
+      groupedSections.push({
+        title: "Mountain Retreats & Cozy Cabins",
+        queryParam: "category=mountains",
+        listings: mountainStays
+      });
+    }
+
+    // 4. Historic & Iconic
+    if (historicStays.length > 0) {
+      groupedSections.push({
+        title: "Iconic Heritage Homes & Castles",
+        queryParam: "category=iconic",
+        listings: historicStays
+      });
+    }
+  }
+
+  res.render("listings/index", { 
+    allListings, 
+    groupedSections, 
+    isSearchOrFilter, 
+    searchPrompt: q || "", 
+    currentCategory: category || "" 
+  });
 };
   
 module.exports.showListing = async(req,res)=>{

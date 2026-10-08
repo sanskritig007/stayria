@@ -789,7 +789,11 @@
         </div>
         </div>
         
-        <div class="save-share-actions d-flex gap-3 mt-2">
+        <div class="save-share-actions d-flex gap-2 mt-2">
+            <button type="button" class="btn btn-light rounded-pill border shadow-sm open-share-modal-btn d-flex align-items-center gap-2 px-3 py-2" style="transition: all 0.2s;">
+                <i class="fa-solid fa-arrow-up-from-bracket" style="font-size: 0.95rem; color: #222;"></i>
+                <span style="font-weight: 500; font-size: 0.9rem;">Share</span>
+            </button>
             <% 
                let isSaved = false;
                if(currUser && currUser.wishlist && currUser.wishlist.includes(listing._id)) {
@@ -954,6 +958,30 @@
             <div class="rate-radio"></div>
           </div>
 
+          <!-- Itemized Price Breakdown Box -->
+          <div class="price-breakdown-box" id="price-breakdown-box">
+            <div class="breakdown-row">
+              <span id="breakdown-nights-label">&#8377;<%= listing.price.toLocaleString("en-IN") %> x <span id="breakdown-night-count">1</span> night</span>
+              <span id="breakdown-nights-total" data-base-price="<%= listing.price %>">&#8377;<%= listing.price.toLocaleString("en-IN") %></span>
+            </div>
+            <div class="breakdown-row">
+              <span class="info-label" title="Standard cleaning and sanitation fee">Cleaning fee</span>
+              <span id="breakdown-cleaning-fee" data-base-price="<%= Math.round(listing.price * 0.08) %>">&#8377;<%= Math.round(listing.price * 0.08).toLocaleString("en-IN") %></span>
+            </div>
+            <div class="breakdown-row">
+              <span class="info-label" title="Stayria 24/7 guest support and platform fee">Stayria service fee</span>
+              <span id="breakdown-service-fee" data-base-price="<%= Math.round(listing.price * 0.06) %>">&#8377;<%= Math.round(listing.price * 0.06).toLocaleString("en-IN") %></span>
+            </div>
+            <div class="breakdown-row" id="breakdown-gst-row" style="display: none;">
+              <span class="info-label">Taxes (18% GST)</span>
+              <span id="breakdown-gst-fee" data-base-price="<%= Math.round(listing.price * 0.18) %>">&#8377;<%= Math.round(listing.price * 0.18).toLocaleString("en-IN") %></span>
+            </div>
+            <div class="breakdown-row total-row">
+              <span id="breakdown-total-title">Total before taxes</span>
+              <span id="breakdown-grand-total" data-base-price="<%= listing.price %>">&#8377;<%= listing.price.toLocaleString("en-IN") %></span>
+            </div>
+          </div>
+
           <% if(currUser){ %>
              <button type="submit" class="reserve-btn">Reserve</button>
           <% } else { %>
@@ -1076,6 +1104,81 @@
 
 </div><!-- /show-page-wrap -->
 
+<!-- ── Fullscreen Lightbox Photo Gallery Modal ── -->
+<div class="lightbox-modal" id="lightbox-modal">
+  <div class="lightbox-header">
+    <div class="lightbox-counter" id="lightbox-counter">1 / <%= displayImgs.length %></div>
+    <button type="button" class="lightbox-close-btn" id="lightbox-close-btn" aria-label="Close photo gallery">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+  <div class="lightbox-main-stage">
+    <% if (displayImgs.length > 1) { %>
+      <button type="button" class="lightbox-nav-arrow prev" id="lightbox-prev-btn" aria-label="Previous photo">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+    <% } %>
+    <img src="<%= displayImgs[0] %>" alt="<%= listing.title %>" class="lightbox-hero-img" id="lightbox-hero-img">
+    <% if (displayImgs.length > 1) { %>
+      <button type="button" class="lightbox-nav-arrow next" id="lightbox-next-btn" aria-label="Next photo">
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    <% } %>
+  </div>
+  <div class="lightbox-thumbs-bar">
+    <% displayImgs.forEach(function(imgUrl, thumbIdx) { %>
+      <div class="lightbox-thumb <%= thumbIdx === 0 ? 'active' : '' %>" data-index="<%= thumbIdx %>">
+        <img src="<%= imgUrl %>" alt="Thumbnail <%= thumbIdx + 1 %>">
+      </div>
+    <% }); %>
+  </div>
+</div>
+
+<!-- ── Share Property Modal ── -->
+<div class="share-modal-backdrop" id="share-modal">
+  <div class="share-modal-card">
+    <div class="share-modal-header">
+      <h4 class="share-modal-title">Share this place</h4>
+      <button type="button" class="lightbox-close-btn" id="close-share-modal-btn" style="background:#f1f1f1; color:#222;" aria-label="Close modal">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="share-listing-preview">
+      <img src="<%= displayImgs[0] %>" alt="<%= listing.title %>" class="share-preview-thumb">
+      <div class="share-preview-info">
+        <h6><%= listing.title %></h6>
+        <p><%= listing.location %><% if(listing.country){ %>, <%= listing.country %><% } %></p>
+      </div>
+    </div>
+    <div class="share-copy-box">
+      <input type="text" class="share-url-input" id="share-url-input" readonly>
+      <button type="button" class="share-copy-btn" id="share-copy-btn">
+        <i class="fa-regular fa-copy"></i> Copy Link
+      </button>
+    </div>
+    <div class="share-options-grid">
+      <button type="button" class="share-option-btn whatsapp" id="share-whatsapp-btn">
+        <i class="fa-brands fa-whatsapp"></i>
+        <span>WhatsApp</span>
+      </button>
+      <button type="button" class="share-option-btn twitter" id="share-twitter-btn">
+        <i class="fa-brands fa-x-twitter"></i>
+        <span>X / Twitter</span>
+      </button>
+      <button type="button" class="share-option-btn native" id="share-native-btn">
+        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+        <span>More</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Floating Share Toast ── -->
+<div class="share-toast" id="share-toast">
+  <i class="fa-solid fa-circle-check"></i>
+  <span class="toast-text">Link copied to clipboard!</span>
+</div>
+
 <script>
   // Description toggle
   function toggleDesc() {
@@ -1104,6 +1207,9 @@
   let checkOutDate = null;
   const basePrice = <%= listing.price %>;
 
+  // Global gallery images for Lightbox modal
+  window.stayriaGalleryImages = <%- JSON.stringify(displayImgs) %>;
+
   function updateBookingPrice() {
     let nights = 1;
     if (checkInDate && checkOutDate) {
@@ -1113,7 +1219,8 @@
     }
     
     const taxToggle = document.getElementById('bookingTaxToggle');
-    const taxMultiplier = (taxToggle && taxToggle.checked) ? 1.18 : 1;
+    const hasTax = taxToggle && taxToggle.checked;
+    const taxMultiplier = hasTax ? 1.18 : 1;
     const currentBaseWithTax = basePrice * taxMultiplier;
 
     const totalPrice = Math.round(currentBaseWithTax * nights * currentRateMultiplier);
@@ -1121,10 +1228,57 @@
     // Update hidden input
     document.getElementById('booking-totalPrice').value = totalPrice;
     
+    // Helper to format currency
+    const fmt = (amt) => {
+      if (typeof StayriaCurrency !== 'undefined') {
+        return StayriaCurrency.formatPrice(amt);
+      }
+      return `₹${amt.toLocaleString("en-IN")}`;
+    };
+
     // Update display texts
-    document.querySelector('.display-total-price').innerHTML = `&#8377;${Math.round(currentBaseWithTax * nights).toLocaleString("en-IN")} total`;
-    document.querySelector('.display-total-price-refundable').innerHTML = `&#8377;${Math.round(currentBaseWithTax * nights * 1.12).toLocaleString("en-IN")} total`;
-    document.getElementById('display-price-night').innerHTML = `&#8377;${Math.round(currentBaseWithTax).toLocaleString("en-IN")}`;
+    document.querySelector('.display-total-price').innerHTML = `${fmt(Math.round(currentBaseWithTax * nights))} total`;
+    document.querySelector('.display-total-price-refundable').innerHTML = `${fmt(Math.round(currentBaseWithTax * nights * 1.12))} total`;
+    document.getElementById('display-price-night').innerHTML = `${fmt(Math.round(currentBaseWithTax))}`;
+
+    // Update Price Breakdown Box
+    const nightCountEl = document.getElementById('breakdown-night-count');
+    if (nightCountEl) nightCountEl.innerText = nights;
+
+    const nightsTotal = basePrice * nights * currentRateMultiplier;
+    const cleaningFee = Math.max(300, Math.round(basePrice * 0.08));
+    const serviceFee = Math.max(250, Math.round(basePrice * 0.06));
+    const subtotal = nightsTotal + cleaningFee + serviceFee;
+    const gstFee = Math.round(subtotal * 0.18);
+    const grandTotal = hasTax ? (subtotal + gstFee) : subtotal;
+
+    const nightsLabelEl = document.getElementById('breakdown-nights-label');
+    if (nightsLabelEl) nightsLabelEl.innerHTML = `${fmt(Math.round(basePrice * currentRateMultiplier))} x ${nights} night${nights > 1 ? 's' : ''}`;
+
+    const nightsTotalEl = document.getElementById('breakdown-nights-total');
+    if (nightsTotalEl) nightsTotalEl.innerHTML = fmt(nightsTotal);
+
+    const cleanEl = document.getElementById('breakdown-cleaning-fee');
+    if (cleanEl) cleanEl.innerHTML = fmt(cleaningFee);
+
+    const servEl = document.getElementById('breakdown-service-fee');
+    if (servEl) servEl.innerHTML = fmt(serviceFee);
+
+    const gstRow = document.getElementById('breakdown-gst-row');
+    const gstEl = document.getElementById('breakdown-gst-fee');
+    const totalTitleEl = document.getElementById('breakdown-total-title');
+    
+    if (hasTax) {
+      if (gstRow) gstRow.style.display = 'flex';
+      if (gstEl) gstEl.innerHTML = fmt(gstFee);
+      if (totalTitleEl) totalTitleEl.innerText = 'Total after taxes';
+    } else {
+      if (gstRow) gstRow.style.display = 'none';
+      if (totalTitleEl) totalTitleEl.innerText = 'Total before taxes';
+    }
+
+    const grandEl = document.getElementById('breakdown-grand-total');
+    if (grandEl) grandEl.innerHTML = fmt(grandTotal);
   }
 
   if (typeof flatpickr !== 'undefined') {

@@ -192,7 +192,7 @@
                   <h6 class="listing-card-title"><%= listing.title %></h6>
 
                   <div class="listing-card-meta-line">
-                    <span class="price-amount">&#8377;<%= listing.price.toLocaleString("en-IN") %></span>
+                    <span class="price-amount" data-base-price="<%= listing.price %>">&#8377;<%= listing.price.toLocaleString("en-IN") %></span>
                     <span class="night-text">night</span>
                     <span class="dot-sep">·</span>
                     <span class="rating-text">
@@ -310,7 +310,7 @@
                 <h6 class="listing-card-title"><%= listing.title %></h6>
 
                 <div class="listing-card-meta-line">
-                  <span class="price-amount">&#8377;<%= listing.price.toLocaleString("en-IN") %></span>
+                  <span class="price-amount" data-base-price="<%= listing.price %>">&#8377;<%= listing.price.toLocaleString("en-IN") %></span>
                   <span class="night-text">night</span>
                   <span class="dot-sep">·</span>
                   <span class="rating-text">

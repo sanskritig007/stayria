@@ -46,8 +46,19 @@
 
       <!-- Right: User Actions / Menu -->
       <div class="header-right-menu d-flex align-items-center gap-3">
-        <a class="nav-link become-host-btn d-none d-md-inline" href="/listings/new">Become a host</a>
-        <a class="nav-link px-2 d-none d-md-inline" href="#"><i class="fa-solid fa-globe"></i></a>
+        <!-- Currency Selector Dropdown -->
+        <div class="dropdown d-none d-md-inline">
+          <button class="btn currency-selector-btn" type="button" id="currencyDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-globe"></i>
+            <span class="current-currency-label">₹ INR</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end currency-dropdown-menu" aria-labelledby="currencyDropdown">
+            <li><a class="dropdown-item currency-item active" data-currency="INR"><span>🇮🇳 INR</span> <strong>₹</strong></a></li>
+            <li><a class="dropdown-item currency-item" data-currency="USD"><span>🇺🇸 USD</span> <strong>$</strong></a></li>
+            <li><a class="dropdown-item currency-item" data-currency="EUR"><span>🇪🇺 EUR</span> <strong>€</strong></a></li>
+            <li><a class="dropdown-item currency-item" data-currency="GBP"><span>🇬🇧 GBP</span> <strong>£</strong></a></li>
+          </ul>
+        </div>
 
         <!-- User Profile Dropdown Button -->
         <div class="dropdown">

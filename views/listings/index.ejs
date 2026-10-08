@@ -75,6 +75,13 @@
 
 </div>
 
+<!-- Mapbox Explore Map View (Hidden by default, toggled via floating button) -->
+<div class="mapbox-explore-container" id="mapbox-explore-container">
+  <div id="mapbox-explore-map" style="width:100%;height:100%;"></div>
+</div>
+
+<div id="listings-content-area">
+
 <% if (typeof isSearchOrFilter !== 'undefined' && !isSearchOrFilter && typeof groupedSections !== 'undefined' && groupedSections.length > 0) { %>
   <!-- ══════════════════════════════════════════════════════════════════ -->
   <!-- 1. GROUPED DESTINATIONS MULTI-ROW VIEW (Airbnb Official Style)    -->
@@ -331,6 +338,61 @@
     </div>
   <% } %>
 <% } %>
+</div><!-- /listings-content-area -->
+
+<!-- ── Floating Map View Toggle Button ── -->
+<button type="button" class="floating-map-toggle" id="floating-map-toggle-btn">
+  <i class="fa-solid fa-map"></i> <span>Show map</span>
+</button>
+
+<!-- ── Stayria AI Travel Concierge Floating Button ── -->
+<button type="button" class="ai-concierge-fab" id="ai-concierge-fab" aria-label="Ask Stayria AI Concierge" title="Ask Stayria AI Concierge">
+  <i class="fa-solid fa-wand-magic-sparkles"></i>
+</button>
+
+<!-- ── Stayria AI Travel Concierge Modal ── -->
+<div class="ai-concierge-modal" id="ai-concierge-modal">
+  <div class="ai-modal-header">
+    <h6><i class="fa-solid fa-wand-magic-sparkles"></i> Stayria AI Concierge</h6>
+    <button type="button" class="lightbox-close-btn" id="close-ai-modal-btn" style="width:30px;height:30px;font-size:0.85rem;" aria-label="Close AI Concierge">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+  <div class="ai-modal-body">
+    <p class="text-muted" style="font-size:0.85rem;margin-bottom:12px;">Where do you feel like going? Pick a vibe or personalized curation:</p>
+    <div class="ai-prompt-suggestion" data-search="category=mountains">
+      <span>🏔️ Peaceful Mountain Cabins</span>
+      <i class="fa-solid fa-chevron-right text-muted" style="font-size:0.75rem;"></i>
+    </div>
+    <div class="ai-prompt-suggestion" data-search="category=pools">
+      <span>🏊 Luxury Villas with Private Pool</span>
+      <i class="fa-solid fa-chevron-right text-muted" style="font-size:0.75rem;"></i>
+    </div>
+    <div class="ai-prompt-suggestion" data-search="category=castles">
+      <span>🏰 Royal Heritage Castles & Mansions</span>
+      <i class="fa-solid fa-chevron-right text-muted" style="font-size:0.75rem;"></i>
+    </div>
+    <div class="ai-prompt-suggestion" data-search="category=farms">
+      <span>🌿 Nature & Organic Farm Retreats</span>
+      <i class="fa-solid fa-chevron-right text-muted" style="font-size:0.75rem;"></i>
+    </div>
+    <div class="ai-prompt-suggestion" data-search="category=trending">
+      <span>🔥 Most Popular Stays This Week</span>
+      <i class="fa-solid fa-chevron-right text-muted" style="font-size:0.75rem;"></i>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.mapToken = "<%= process.env.MAP_TOKEN %>";
+  window.stayriaMapListings = <%- JSON.stringify(allListings.map(l => ({
+    id: l._id,
+    title: l.title,
+    price: l.price,
+    image: (l.images && l.images[0] ? l.images[0].url : (l.image ? l.image.url : '')),
+    coordinates: (l.geometry && l.geometry.coordinates && l.geometry.coordinates.length >= 2) ? l.geometry.coordinates : [77.209, 28.6139]
+  }))) %>;
+</script>
 
 <script>
   // ─── 1. Wishlist AJAX Toggle ───

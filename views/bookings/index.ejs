@@ -101,13 +101,28 @@
                 </div>
                 <% } %>
               </div>
-              <div class="d-flex justify-content-between align-items-end mt-3">
-                <h5 class="m-0 fw-bold">&#8377;<%= booking.totalPrice.toLocaleString("en-IN") %> <small class="text-muted" style="font-size:0.9rem;">Total</small></h5>
-                <% if(booking.status !== "cancelled") { %>
-                  <form action="/bookings/<%= booking._id %>/cancel" method="POST" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
-                    <button type="submit" class="btn btn-outline-danger btn-sm">Cancel Trip</button>
-                  </form>
-                <% } %>
+              <div class="d-flex justify-content-between align-items-end mt-3 flex-wrap gap-2">
+                <h5 class="m-0 fw-bold" data-base-price="<%= booking.totalPrice %>">&#8377;<%= booking.totalPrice.toLocaleString("en-IN") %> <small class="text-muted" style="font-size:0.9rem;">Total</small></h5>
+                <div class="d-flex gap-2 align-items-center">
+                  <% if(booking.status === "confirmed") { %>
+                    <button type="button" class="btn btn-dark btn-sm view-staypass-btn d-flex align-items-center gap-2"
+                      data-id="<%= booking._id %>"
+                      data-title="<%= booking.listing.title %>"
+                      data-location="<%= booking.listing.location %>, <%= booking.listing.country %>"
+                      data-checkin="<%= booking.checkIn.toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}) %>"
+                      data-checkout="<%= booking.checkOut.toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}) %>"
+                      data-guests="<%= booking.guests %>"
+                      data-price="₹<%= booking.totalPrice.toLocaleString('en-IN') %>"
+                      data-guest="<%= currUser ? currUser.username : 'Guest' %>">
+                      <i class="fa-solid fa-qrcode"></i> View Stay Pass
+                    </button>
+                  <% } %>
+                  <% if(booking.status !== "cancelled") { %>
+                    <form action="/bookings/<%= booking._id %>/cancel" method="POST" onsubmit="return confirm('Are you sure you want to cancel this booking?');" style="margin:0;">
+                      <button type="submit" class="btn btn-outline-danger btn-sm">Cancel Trip</button>
+                    </form>
+                  <% } %>
+                </div>
               </div>
             </div>
           </div>
@@ -225,6 +240,79 @@
         <% } %>
 
       <% } %>
+    </div>
+  </div>
+</div>
+
+<!-- ── Digital Boarding Pass Modal (Stayria Stay Pass) ── -->
+<div class="staypass-modal-backdrop" id="staypass-modal">
+  <div class="staypass-ticket">
+    <div class="staypass-header">
+      <div class="staypass-brand">
+        <i class="fa-regular fa-compass"></i>
+        <span>stayria</span>
+      </div>
+      <span class="staypass-badge"><i class="fa-solid fa-circle-check me-1"></i> Verified Stay Pass</span>
+    </div>
+
+    <div class="staypass-body">
+      <div class="staypass-grid">
+        <div>
+          <div class="staypass-detail-group">
+            <div class="staypass-label">Guest Passenger</div>
+            <div class="staypass-val" id="staypass-guest-name">Guest</div>
+          </div>
+          <div class="staypass-detail-group">
+            <div class="staypass-label">Property</div>
+            <div class="staypass-val text-truncate" id="staypass-property-title" style="max-width: 300px;">Stayria Stay</div>
+          </div>
+          <div class="staypass-detail-group">
+            <div class="staypass-label">Schedule</div>
+            <div class="staypass-val" id="staypass-dates">Date Range</div>
+          </div>
+          <div class="staypass-detail-group">
+            <div class="staypass-label">Destination Location</div>
+            <div class="staypass-val text-truncate" id="staypass-location" style="max-width: 300px;">Location</div>
+          </div>
+        </div>
+
+        <div class="staypass-qr-box">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=STAYRIA-CONFIRMED" alt="Check-in QR Code" class="staypass-qr-img" id="staypass-qr-image">
+          <div class="staypass-qr-sub">Scan to Check-in</div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between pt-2 border-top mt-3">
+        <div>
+          <div class="staypass-label">Party Size</div>
+          <div class="staypass-val" id="staypass-guests-count">1 Guest</div>
+        </div>
+        <div>
+          <div class="staypass-label">Status</div>
+          <div class="staypass-val text-success"><i class="fa-solid fa-shield-check me-1"></i> Confirmed</div>
+        </div>
+        <div>
+          <div class="staypass-label">Total Amount</div>
+          <div class="staypass-val" id="staypass-total-paid">₹0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Perforated Tear Line -->
+    <div class="perforated-divider">
+      <div class="perforated-line"></div>
+    </div>
+
+    <div class="staypass-footer no-print">
+      <div class="staypass-amenity-pill">
+        <i class="fa-solid fa-wifi text-muted"></i> Free Fast WiFi & Keyless Check-in
+      </div>
+      <div class="d-flex gap-2">
+        <button type="button" class="btn btn-outline-secondary btn-sm" id="staypass-close-btn">Close</button>
+        <button type="button" class="staypass-print-btn" id="staypass-print-btn">
+          <i class="fa-solid fa-print"></i> Print / PDF
+        </button>
+      </div>
     </div>
   </div>
 </div>

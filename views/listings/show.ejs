@@ -820,6 +820,9 @@
             <span><i class="fa-solid fa-shield-halved"></i> Identity verified</span>
           </div>
         </div>
+        <button type="button" class="contact-host-btn open-contact-host-btn ms-auto">
+          <i class="fa-regular fa-message"></i> Contact Host
+        </button>
       </div>
 
       <!-- Highlights -->
@@ -1177,6 +1180,45 @@
 <div class="share-toast" id="share-toast">
   <i class="fa-solid fa-circle-check"></i>
   <span class="toast-text">Link copied to clipboard!</span>
+</div>
+
+<!-- ── Contact Host Inquiry Modal ── -->
+<div class="share-modal-backdrop" id="contact-host-modal">
+  <div class="share-modal-card">
+    <div class="share-modal-header">
+      <h4 class="share-modal-title">Contact <%= listing.owner ? listing.owner.username : 'Host' %></h4>
+      <button type="button" class="lightbox-close-btn" id="close-contact-host-btn" style="background:#f1f1f1; color:#222;" aria-label="Close modal">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    
+    <div class="d-flex align-items-center gap-3 p-3 rounded-4 mb-3" style="background: #f8f9fa;">
+      <div class="host-avatar" style="width: 44px; height: 44px; font-size: 1.1rem;">
+        <%= listing.owner ? listing.owner.username.substring(0,1).toUpperCase() : 'H' %>
+      </div>
+      <div>
+        <div class="fw-bold" style="font-size: 0.95rem;"><%= listing.owner ? listing.owner.username : 'Property Host' %></div>
+        <div class="text-muted" style="font-size: 0.82rem;"><i class="fa-regular fa-clock me-1"></i> Typically responds within an hour</div>
+      </div>
+    </div>
+
+    <label class="fw-bold mb-1" style="font-size: 0.88rem;">Quick questions</label>
+    <div class="inquiry-chips-row">
+      <button type="button" class="inquiry-chip" data-question="Is early check-in or late checkout available?">⏰ Early check-in?</button>
+      <button type="button" class="inquiry-chip" data-question="Is high-speed WiFi suitable for remote work?">💻 WiFi speed?</button>
+      <button type="button" class="inquiry-chip" data-question="Is secure car parking available on the premises?">🚗 Parking space?</button>
+      <button type="button" class="inquiry-chip" data-question="Are pets allowed at this property?">🐾 Pet friendly?</button>
+    </div>
+
+    <div class="mb-3">
+      <label class="fw-bold mb-1" style="font-size: 0.88rem;">Your message to the host</label>
+      <textarea id="inquiry-message-text" class="form-control" rows="4" style="border-radius: 12px; resize: none; font-size: 0.92rem;" placeholder="Hi <%= listing.owner ? listing.owner.username : 'Host' %>, I'm interested in booking your place..."></textarea>
+    </div>
+
+    <button type="button" class="btn btn-dark w-100 py-2 fw-bold rounded-3 d-flex align-items-center justify-content-center gap-2" id="send-inquiry-btn">
+      <i class="fa-brands fa-whatsapp text-success" style="font-size: 1.15rem;"></i> Send Inquiry via WhatsApp
+    </button>
+  </div>
 </div>
 
 <script>

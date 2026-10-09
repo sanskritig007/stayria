@@ -183,7 +183,21 @@ module.exports.showListing = async(req,res)=>{
         req.flash("error", "Listing you are requested for does not exist!");
         return res.redirect("/listings"); 
     }
-    res.render("listings/show",{listing});
+
+    let hasBooked = false;
+    if (req.user) {
+        const Booking = require("../models/booking.js");
+        const userBooking = await Booking.findOne({
+            listing: id,
+            user: req.user._id,
+            status: "confirmed"
+        });
+        if (userBooking) {
+            hasBooked = true;
+        }
+    }
+
+    res.render("listings/show", { listing, hasBooked });
 }
 
 module.exports.createListing = async(req,res,next)=>{

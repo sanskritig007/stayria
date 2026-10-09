@@ -105,6 +105,9 @@
                 <h5 class="m-0 fw-bold" data-base-price="<%= booking.totalPrice %>">&#8377;<%= booking.totalPrice.toLocaleString("en-IN") %> <small class="text-muted" style="font-size:0.9rem;">Total</small></h5>
                 <div class="d-flex gap-2 align-items-center">
                   <% if(booking.status === "confirmed") { %>
+                    <a href="https://api.whatsapp.com/send?text=<%= encodeURIComponent('Hi! I have a confirmed reservation for ' + booking.listing.title + ' (Check-in: ' + booking.checkIn.toLocaleDateString() + '). I have a question about my stay.') %>" target="_blank" class="btn btn-outline-dark btn-sm d-flex align-items-center gap-1">
+                      <i class="fa-brands fa-whatsapp text-success"></i> Contact Host
+                    </a>
                     <button type="button" class="btn btn-dark btn-sm view-staypass-btn d-flex align-items-center gap-2"
                       data-id="<%= booking._id %>"
                       data-title="<%= booking.listing.title %>"

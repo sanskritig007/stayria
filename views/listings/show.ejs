@@ -820,9 +820,11 @@
             <span><i class="fa-solid fa-shield-halved"></i> Identity verified</span>
           </div>
         </div>
+        <% if (typeof hasBooked !== 'undefined' && hasBooked) { %>
         <button type="button" class="contact-host-btn open-contact-host-btn ms-auto">
           <i class="fa-regular fa-message"></i> Contact Host
         </button>
+        <% } %>
       </div>
 
       <!-- Highlights -->
@@ -1182,7 +1184,8 @@
   <span class="toast-text">Link copied to clipboard!</span>
 </div>
 
-<!-- ── Contact Host Inquiry Modal ── -->
+<!-- ── Contact Host Inquiry Modal (Only for guests with reservations) ── -->
+<% if (typeof hasBooked !== 'undefined' && hasBooked) { %>
 <div class="share-modal-backdrop" id="contact-host-modal">
   <div class="share-modal-card">
     <div class="share-modal-header">
@@ -1212,7 +1215,7 @@
 
     <div class="mb-3">
       <label class="fw-bold mb-1" style="font-size: 0.88rem;">Your message to the host</label>
-      <textarea id="inquiry-message-text" class="form-control" rows="4" style="border-radius: 12px; resize: none; font-size: 0.92rem;" placeholder="Hi <%= listing.owner ? listing.owner.username : 'Host' %>, I'm interested in booking your place..."></textarea>
+      <textarea id="inquiry-message-text" class="form-control" rows="4" style="border-radius: 12px; resize: none; font-size: 0.92rem;" placeholder="Hi <%= listing.owner ? listing.owner.username : 'Host' %>, I have a question regarding my confirmed stay..."></textarea>
     </div>
 
     <button type="button" class="btn btn-dark w-100 py-2 fw-bold rounded-3 d-flex align-items-center justify-content-center gap-2" id="send-inquiry-btn">
@@ -1220,6 +1223,7 @@
     </button>
   </div>
 </div>
+<% } %>
 
 <script>
   // Description toggle

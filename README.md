@@ -1,121 +1,233 @@
 <h1 align="center">Stayria 🏖️</h1>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js"/>
-  <img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express.js"/>
-  <img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB"/>
-  <img src="https://img.shields.io/badge/Mapbox-000000?style=for-the-badge&logo=mapbox&logoColor=white" alt="Mapbox"/>
-  <img src="https://img.shields.io/badge/Cloudinary-3448C5?style=for-the-badge&logo=Cloudinary&logoColor=white" alt="Cloudinary"/>
+  <strong>Next-Generation Full-Stack Vacation Rental & Booking Ecosystem</strong>
 </p>
 
-> **Stayria** is a scalable, full-stack property booking platform engineered with Node.js and MongoDB. It features secure session-based authentication, interactive geospatial mapping, dynamic image processing, and a professional host analytics dashboard.
+<p align="center">
+  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js"/>
+  <img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express.js"/>
+  <img src="https://img.shields.io/badge/MongoDB_Atlas-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB Atlas"/>
+  <img src="https://img.shields.io/badge/Mapbox_GL_JS-000000?style=for-the-badge&logo=mapbox&logoColor=white" alt="Mapbox"/>
+  <img src="https://img.shields.io/badge/Cloudinary-3448C5?style=for-the-badge&logo=Cloudinary&logoColor=white" alt="Cloudinary"/>
+  <img src="https://img.shields.io/badge/Passport.js-34E0A1?style=for-the-badge&logo=passport&logoColor=white" alt="Passport.js"/>
+  <img src="https://img.shields.io/badge/Bootstrap_5-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white" alt="Bootstrap 5"/>
+</p>
+
+> **Stayria** is a modern, production-grade vacation rental platform engineered with Node.js, Express, and MongoDB. Inspired by Airbnb's flagship design system, it delivers an immersive booking experience featuring interactive geospatial map exploration, dynamic in-card photo carousels, instant multi-currency switching, an AI-guided travel concierge, and digital boarding passes with dynamic QR codes.
 
 <div align="center">
-  <i><!-- TODO: Insert a high-quality GIF or screenshot of your application here --></i>
-  <br>
-  <br>
-  <a href="https://stayria.onrender.com"><strong>View Live Demo</strong></a> | 
-  <a href="#getting-started"><strong>Explore the Docs</strong></a>
+  <a href="https://stayria.onrender.com"><strong>🌐 View Live Deployment</strong></a> &nbsp;|&nbsp; 
+  <a href="#-flagship-features"><strong>✨ Key Features</strong></a> &nbsp;|&nbsp; 
+  <a href="#%EF%B8%8F-system-architecture"><strong>🏗️ Architecture</strong></a> &nbsp;|&nbsp; 
+  <a href="#-getting-started-local-development"><strong>💻 Local Setup</strong></a>
 </div>
+
+---
+
+## ✨ Flagship Features
+
+### 1. 🎟️ Digital Stay Pass & Vector QR Code (`/bookings`)
+- **Airline-Style Boarding Pass**: Confirmed bookings generate a digital travel ticket highlighting guest credentials, stay dates, party size, and property details.
+- **Dynamic Check-in QR**: Generates dynamic verification QR codes on-the-fly for contactless host check-in.
+- **1-Click Print & PDF Export**: Native `@media print` stylesheet optimized for saving clean offline PDF travel documents.
+
+### 2. 🗺️ Interactive Mapbox Explore View (`/listings`)
+- **Floating Map/List Switcher**: Smooth 1-tap floating toggle between the curated grid and full-screen geospatial explore mode.
+- **Custom Price Markers**: Interactive map pins display live nightly rates with popup property previews.
+- **Forward Geocoding**: Automatic coordinate generation `[longitude, latitude]` for addresses on listing creation.
+
+### 3. 🤖 Stayria AI Travel Concierge
+- **Floating AI Drawer**: Instant curation assistant recommending top destinations based on travel vibes.
+- **1-Tap Themed Discovery**: Filter by *Peaceful Mountain Cabins*, *Luxury Pool Villas*, *Royal Heritage Castles*, *Organic Farm Retreats*, and *Trending This Week*.
+
+### 4. 💱 Real-Time Multi-Currency Engine
+- **Instant Global Conversion**: Live client-side conversion across **INR (₹)**, **USD ($)**, **EUR (€)**, and **GBP (£)**.
+- **Persistent Preferences**: Saves the user's preferred currency in `localStorage` across page reloads and checkout flows.
+- **Complete Parity**: Seamlessly updates all home cards, destination tracks, lightbox tags, and booking breakdowns.
+
+### 5. 📸 Airbnb-Grade Photo Carousels & Fullscreen Lightbox
+- **In-Card Touch/Hover Carousels**: Swipe or arrow-click through property photo galleries right from search cards without page navigation.
+- **Fullscreen Gallery Modal**: Distraction-free high-resolution lightbox with active thumbnail track, image counters, and keyboard navigation.
+
+### 6. 💳 Itemized Price Breakdown & Date Overlap Protection
+- **Transparent Cost Accordion**: Live calculation of base rate, length of stay, cleaning fees, platform fees, and optional 18% GST tax toggle.
+- **No Double-Booking**: Query engine actively prevents booking collisions by checking date overlap against existing reservations.
+
+### 7. 💬 Verified Guest "Contact Host" Channel
+- **Reservation Gated**: Exclusive messaging channel restricted strictly to guests with confirmed reservations for maximum host privacy.
+- **Quick Inquiries & WhatsApp Relay**: 1-tap inquiry chips (*Early check-in?*, *WiFi speed?*, *Parking?*) with instant WhatsApp direct communication.
+
+### 8. 📊 Comprehensive Host Analytics Dashboard
+- **Host Metrics**: Real-time aggregation of lifetime earnings, pending payouts, and total guest count.
+- **Chronological Sorting**: Automated division of reservations into *Upcoming Stays* and *Past Records*.
 
 ---
 
 ## 🏗️ System Architecture
 
-Stayria follows a robust MVC (Model-View-Controller) architecture designed for scalability and maintainability.
+Stayria follows a strict **Model-View-Controller (MVC)** architectural pattern:
 
 ```mermaid
-graph LR
-    Client([Client / Browser]) <--> |HTTP/REST| Express(Express.js Server)
-    Express <--> |Mongoose ODM| DB[(MongoDB Atlas)]
-    Express -.-> |Geocoding| Mapbox[Mapbox API]
-    Express -.-> |Image CDN| Cloudinary[Cloudinary API]
-    Express -.-> |Auth| Passport[Passport.js Local]
+graph TD
+    Client([Client / Web Browser])
+
+    subgraph Presentation & Client Logic
+        Client --> EJS[EJS Templates + ejs-mate Layouts]
+        Client --> ClientJS[Client Scripts: Currency, Carousels, Mapbox, Features]
+    end
+
+    subgraph Express Application Layer
+        EJS <--> Routes[Express RESTful Routes]
+        Routes --> AuthMW[Passport & Auth Middleware]
+        AuthMW --> Controllers[MVC Controllers: Listings, Bookings, Users, Reviews]
+    end
+
+    subgraph Services & APIs
+        Controllers --> Geocoder[Mapbox Geocoding SDK]
+        Controllers --> CDN[Cloudinary Multi-Image Uploads]
+        Controllers --> QR[Dynamic QR Generation API]
+    end
+
+    subgraph Data Layer
+        Controllers <--> Mongoose[Mongoose ODM]
+        Mongoose <--> MongoDB[(MongoDB Atlas)]
+        AuthMW <--> SessionStore[(connect-mongo Session Store)]
+    end
 ```
-
-## 🚀 Key Technical Achievements
-
-MNCs require code that is not just functional, but secure, scalable, and beautifully designed. Here is how Stayria delivers:
-
-- **Robust Security & Authentication**: Implemented secure, session-based authentication using `passport-local-mongoose`. Sessions are stored persistently in MongoDB using `connect-mongo` to survive server restarts, preventing session hijacking. Passwords are cryptographically salted and hashed.
-- **Data Integrity & Validation**: Built rigid server-side validation schemas using `Joi` to sanitize all incoming payload data before it reaches Mongoose, effectively mitigating NoSQL injection and malformed data crashes.
-- **Geospatial Engineering**: Integrated Mapbox API for forward geocoding. User-submitted string addresses are converted into GeoJSON coordinate data (`[longitude, latitude]`) on the backend and injected into the frontend for interactive, dynamic map rendering.
-- **Dynamic File Processing & Preview Staging**: Engineered a middleware pipeline using `Multer` and `Cloudinary` to parse `multipart/form-data`, stream image uploads directly to a CDN, and store optimized image URLs in the database. Built interactive multi-image preview staging with client-side remove controls in both creation and edit flows.
-- **Complex Relational Data**: Designed a complex MongoDB schema structure involving one-to-many and many-to-many relationships (Users ↔ Listings ↔ Reviews ↔ Bookings) using `populate()` for efficient document referencing.
-- **Advanced UI/UX Engineering**: Crafted a modern, Airbnb-inspired interface using custom CSS and Bootstrap grids. Built a complex, interactive booking layout with sticky checkout cards, dynamic price calculations (taxes, fees, stay duration), professional flash alerts, and a mock payment gateway that triggers WhatsApp notifications.
-- **Host Analytics Dashboard**: Engineered a data aggregation system for hosts that calculates total earnings, pending payouts, and automatically sorts relational guest bookings into 'Upcoming' and 'Past' lists based on JavaScript `Date` object comparisons.
 
 ---
 
-## 🛠️ Tech Stack
+## 📁 Codebase Directory Architecture
 
-### Frontend Layer
-- **HTML5 / CSS3 / JavaScript (ES6+)**
-- **EJS (Embedded JavaScript)** with `ejs-mate` for dynamic templating and layout management
-- **Bootstrap 5** for responsive, mobile-first flexbox/grid layouts
+```text
+stayria/
+├── controllers/          # Business logic & request handling
+│   ├── booking.js        # Checkout, reservation creation, host analytics
+│   ├── listings.js       # Curated sections, search filters, CRUD, geocoding
+│   ├── reviews.js        # Review submission & deletion
+│   └── users.js          # Authentication (register, login, logout)
+├── models/               # Mongoose schemas & data relationships
+│   ├── booking.js        # Relational schema (Listing ↔ User ↔ Dates ↔ Status)
+│   ├── listing.js        # Properties, GeoJSON coordinates, multi-images
+│   ├── review.js         # Ratings & author comments
+│   └── user.js           # User credentials & wishlist arrays
+├── public/
+│   ├── css/              # Modular design systems
+│   │   ├── style.css             # Base typography & navigation
+│   │   ├── card-enhancements.css # Carousels, badges & destination rows
+│   │   ├── show-enhancements.css # Lightbox gallery & price breakdown
+│   │   └── features.css          # Boarding Pass, AI concierge & map toggle
+│   └── js/               # Modular frontend interactivity
+│       ├── card-carousel.js      # Card swipe logic & filter scrolling
+│       ├── currency-converter.js # Global multi-currency state manager
+│       ├── show-enhancements.js  # Lightbox & share modal controls
+│       ├── features.js           # Stay Pass QR, Mapbox pins & AI concierge
+│       └── map.js                # Mapbox GL JS single-listing render
+├── routes/               # Express REST endpoints
+│   ├── booking.js
+│   ├── listing.js
+│   ├── review.js
+│   ├── user.js
+│   └── wishlist.js
+├── views/                # EJS dynamic UI templates
+│   ├── bookings/         # Trips, boarding passes & host analytics
+│   ├── includes/         # Navbar, footer, flash alerts
+│   ├── layouts/          # Global boilerplate layout
+│   └── listings/         # Home, destination rows, show page, CRUD forms
+├── schema.js             # Joi validation schemas (data sanitization)
+├── middleware.js         # Authentication, authorization & validation guards
+└── app.js                # Express application configuration & database bootstrap
+```
 
-### Backend Layer
-- **Node.js** (Runtime environment)
-- **Express.js** (Web framework and RESTful API routing)
-- **Passport.js** (Authentication middleware)
-- **Joi** (Data validation schema)
-- **Multer** (File upload parsing)
+---
 
-### Database Layer
-- **MongoDB Atlas** (Cloud NoSQL Database)
-- **Mongoose** (Object Data Modeling)
-- **connect-mongo** (Session store)
+## 🛠️ Tech Stack & Libraries
 
-### APIs & DevOps
-- **Cloudinary** (Image CDN and transformation)
-- **Mapbox** (Geocoding and interactive mapping)
-- **Render** (Cloud deployment and hosting)
+| Layer | Technologies |
+|---|---|
+| **Frontend** | HTML5, CSS3, JavaScript (ES6+), EJS, `ejs-mate`, Bootstrap 5, FontAwesome 6 |
+| **Backend** | Node.js, Express.js |
+| **Authentication** | Passport.js, `passport-local`, `passport-local-mongoose` |
+| **Data & Session** | MongoDB Atlas, Mongoose ODM, `connect-mongo`, Express Session |
+| **Validation** | Joi Schema Sanitization |
+| **Geospatial & Mapping** | Mapbox GL JS v3, `@mapbox/mapbox-sdk` |
+| **Media & Storage** | Cloudinary API, Multer, `multer-storage-cloudinary` |
+| **Pickers & Utilities** | Flatpickr (range date-picker), Connect Flash, Dotenv |
 
 ---
 
 ## 💻 Getting Started (Local Development)
 
-To run this project locally, follow these steps:
+### 1. Prerequisites
+- **Node.js** (v18.x or v20.x+ recommended)
+- **Git**
+- A **MongoDB Atlas** database URI or local MongoDB daemon
+- A free **Mapbox** token & **Cloudinary** credentials
 
-### 1. Clone the repository
+### 2. Clone the Repository
 ```bash
 git clone https://github.com/sanskritig007/stayria.git
 cd stayria
 ```
 
-### 2. Install dependencies
+### 3. Install Dependencies
 ```bash
 npm install
 ```
 
-### 3. Configure Environment Variables
-Create a `.env` file in the root directory and add your secret keys:
+### 4. Configure Environment Variables
+Create a `.env` file in the project root:
 ```env
-ATLASDB_URL=your_mongodb_connection_string
-SECRET=your_highly_secure_session_secret
+PORT=3000
+ATLASDB_URL=mongodb+srv://<username>:<password>@cluster.mongodb.net/stayria
+SECRET=your_super_secret_session_key
+MAP_TOKEN=pk.your_mapbox_public_token
 CLOUD_NAME=your_cloudinary_cloud_name
 CLOUD_API_KEY=your_cloudinary_api_key
 CLOUD_API_SECRET=your_cloudinary_api_secret
-MAP_TOKEN=your_mapbox_token
-PORT=8080
 ```
 
-### 4. Run the application
+### 5. Launch the Application
 ```bash
 node app.js
 ```
-The server will start on `http://localhost:8080`. Navigate to `/listings` to view the application.
+Open **`http://localhost:3000`** in your browser.
 
 ---
 
-## 🛤️ Future Roadmap
+## 🔐 Credentials & Demo Testing
 
-- [ ] **OAuth Integration**: Implement Google/GitHub sign-in using Passport strategies.
-- [ ] **Payment Gateway**: Migrate the mock checkout flow to the live Stripe API.
-- [ ] **WebSockets**: Introduce Socket.io for real-time messaging between hosts and guests.
-- [ ] **Availability Engine**: Prevent double-booking by checking date overlap logic during checkout.
+For quick manual testing, pre-configured accounts include:
+- **Admin/Host Account**: `sanskriti` (Password: `12345`)
+- **Demo Guest Account**: `demo12` (Password: `12345`)
 
 ---
-*This project is under active development.*
 
-<!-- Updated for project synchronization & maintenance -->
+## 🛤️ Project Milestones & Roadmap
+
+- [x] **Phase 1: Airbnb Flagship Experience**
+  - [x] In-card photo carousels on hover/touch
+  - [x] Balanced horizontal category filter scroll bar
+  - [x] "Guest Favourite" & "Trending" badges
+  - [x] Grouped destination rows view with horizontal navigation
+- [x] **Phase 2: Booking Flow & Media Overhaul**
+  - [x] Fullscreen Lightbox gallery modal with thumbnails
+  - [x] Live Multi-Currency engine (INR, USD, EUR, GBP)
+  - [x] Interactive itemized price breakdown with GST tax toggle
+  - [x] Flatpickr date overlap collision prevention
+  - [x] Share Property modal (WhatsApp, Twitter, Copy Link)
+- [x] **Phase 3: Standout Innovations**
+  - [x] Digital Stay Pass with dynamic QR codes & 1-click print styling
+  - [x] Floating Interactive Map Explore view with custom price pins
+  - [x] Stayria AI Travel Concierge widget
+  - [x] Reservation-gated "Contact Host" verified channel
+- [ ] **Phase 4: Future Explorations**
+  - [ ] Stripe / Razorpay live payment gateway integration
+  - [ ] WebSockets (`Socket.io`) for real-time live host-guest chat
+  - [ ] Google & GitHub OAuth sign-in integration
+
+---
+
+## 📄 License
+This project is licensed under the [MIT License](LICENSE).
